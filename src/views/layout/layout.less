@@ -1,0 +1,59 @@
+@import "../../assets/less/default";
+
+.layout {
+  min-height: 100vh;
+
+  .header {
+    background: #fff;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .content {
+    margin: 24px 16px;
+    padding: 24px;
+    background: #fff;
+    minHeight: 280px
+  }
+
+  .avatar {
+    margin: 0 24px;
+  }
+
+  .trigger {
+    font-size: 18px;
+    line-height: 64px;
+    padding: 0 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+    //color: white;
+
+    &:hover {
+      color: #1890ff;
+    }
+  }
+
+  .logo {
+    height: 32px;
+    //background: rgba(255, 255, 255, 0.2);
+    margin: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+
+    img {
+      height: 32px;
+    }
+
+    span {
+      margin-left: 20px;
+    }
+  }
+
+  .logo-collapsed {
+
+  }
+}
