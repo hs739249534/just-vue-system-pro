@@ -11,7 +11,7 @@ module.exports = {
   devServer: {
     port: 7009,
     proxy: {
-      "/api": {
+      "/sys": {
         target
       }
     }

@@ -1,37 +1,23 @@
 <template>
   <a-card :bordered="false">
     <div class="table-page">
+      <div class="operator">
+        <a-button type="primary" @click="createGroup">新建菜单组</a-button>
+      </div>
+      <a-divider></a-divider>
       <a-row>
-        <a-col :span="7">
-          <a-tree
-            showLine
-            defaultExpandAll
-            @select="onSelectTree"
-            :treeData="topFuncs"
-            :selectedKeys="topfuncsKeys"
-          >
+        <a-col :span="4">
+          <a-tree :showLine="true" @select="onSelectTree" :treeData="treeData">
           </a-tree>
         </a-col>
-        <a-col :span="9">
+        <a-col :span="20">
           <br />
-          <a-form :form="groupForm" layout="vertical" v-if="groupFormVisible">
-            <a-form-item label="客户端类型">
-              <a-input
-                v-decorator="[
-                  'clients',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        message: '请输入客户端类型'
-                      }
-                    ]
-                  }
-                ]"
-                placeholder="支持的客户端类型，多个用“#”号隔开"
-              />
-            </a-form-item>
-            <a-form-item label="父组编码">
+          <a-form :form="groupForm">
+            <a-form-item
+              label="父组编码"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
               <a-input
                 v-decorator="[
                   'fatherId',
@@ -47,7 +33,11 @@
                 placeholder="请输入父组编码"
               />
             </a-form-item>
-            <a-form-item label="组编码">
+            <a-form-item
+              label="组编码"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
               <a-input
                 v-decorator="[
                   'groupid',
@@ -63,7 +53,11 @@
                 placeholder="请输入组编码"
               />
             </a-form-item>
-            <a-form-item label="组名称">
+            <a-form-item
+              label="组名称"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
               <a-input
                 v-decorator="[
                   'groupname',
@@ -79,7 +73,31 @@
                 placeholder="请输入组名称"
               />
             </a-form-item>
-            <a-form-item label="组描述">
+            <a-form-item
+              label="组图标链接"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
+              <a-input
+                v-decorator="[
+                  'groupIconFile',
+                  {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请输入组图标链接'
+                      }
+                    ]
+                  }
+                ]"
+                placeholder="请输入组图标链接"
+              />
+            </a-form-item>
+            <a-form-item
+              label="组描述"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
               <a-input
                 v-decorator="[
                   'groupdesc',
@@ -95,67 +113,11 @@
                 placeholder="请输入组描述"
               />
             </a-form-item>
-            <a-form-item label="组图标">
-              <a-input
-                v-decorator="[
-                  'groupicon',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        message: '请输入组图标链接'
-                      }
-                    ]
-                  }
-                ]"
-                placeholder="请输入组图标链接"
-              />
-            </a-form-item>
-            <a-form-item label="排序依据">
-              <a-input
-                v-decorator="[
-                  'orderid',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        message: '请输入排序依据'
-                      }
-                    ]
-                  }
-                ]"
-                placeholder="请输入排序依据"
-              />
-            </a-form-item>
-            <a-form-item label="应用开关">
-              <a-select
-                style="width: 100%;"
-                v-decorator="[
-                  'closed',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        message: ''
-                      }
-                    ]
-                  }
-                ]"
-                placeholder=""
-              >
-                <a-select-option value="0">关</a-select-option>
-                <a-select-option value="1">开</a-select-option>
-              </a-select>
-            </a-form-item>
-            <a-form-item>
-              <a-button type="primary" @click="updateGroup">
-                更新
-              </a-button>
-            </a-form-item>
-          </a-form>
-
-          <a-form :form="itemForm" layout="vertical" v-if="itemFormVisible">
-            <a-form-item label="客户端类型">
+            <a-form-item
+              label="客户端类型"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
               <a-input
                 v-decorator="[
                   'clients',
@@ -171,6 +133,48 @@
                 placeholder="支持的客户端类型，多个用“#”号隔开"
               />
             </a-form-item>
+            <a-form-item
+              label="排序依据"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
+              <a-input
+                v-decorator="[
+                  'orderid',
+                  {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请输入排序依据'
+                      }
+                    ]
+                  }
+                ]"
+                placeholder="请输入排序依据"
+              />
+            </a-form-item>
+            <a-form-item
+              label="应用开关"
+              :labelCol="labelCol"
+              :wrapperCol="wrapperCol"
+            >
+              <a-input
+                v-decorator="[
+                  'closed',
+                  {
+                    rules: [
+                      {
+                        required: true,
+                        message: ''
+                      }
+                    ]
+                  }
+                ]"
+                placeholder=""
+              />
+            </a-form-item>
+          </a-form>
+          <a-form :form="funcForm">
             <a-form-item label="功能编码">
               <a-input
                 v-decorator="[
@@ -235,6 +239,22 @@
                 placeholder="请输入功能链接"
               />
             </a-form-item>
+            <a-form-item label="客户端类型">
+              <a-input
+                v-decorator="[
+                  'clients',
+                  {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请输入客户端类型'
+                      }
+                    ]
+                  }
+                ]"
+                placeholder="支持的客户端类型，多个用“#”号隔开"
+              />
+            </a-form-item>
             <a-form-item label="排序依据">
               <a-input
                 v-decorator="[
@@ -267,29 +287,8 @@
                 placeholder="请输入首页排序依据"
               />
             </a-form-item>
-            <a-form-item label="停用标识">
-              <a-select
-                style="width: 100%;"
-                v-decorator="[
-                  'closed',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        message: ''
-                      }
-                    ]
-                  }
-                ]"
-                placeholder=""
-              >
-                <a-select-option value="0">关</a-select-option>
-                <a-select-option value="1">开</a-select-option>
-              </a-select>
-            </a-form-item>
             <a-form-item label="匿名标识">
-              <a-select
-                style="width: 100%;"
+              <a-input
                 v-decorator="[
                   'anonymous',
                   {
@@ -302,14 +301,26 @@
                   }
                 ]"
                 placeholder=""
-              >
-                <a-select-option value="0">关</a-select-option>
-                <a-select-option value="1">开</a-select-option>
-              </a-select>
+              />
+            </a-form-item>
+            <a-form-item label="停用标识">
+              <a-input
+                v-decorator="[
+                  'closed',
+                  {
+                    rules: [
+                      {
+                        required: true,
+                        message: ''
+                      }
+                    ]
+                  }
+                ]"
+                placeholder=""
+              />
             </a-form-item>
             <a-form-item label="热点标识">
-              <a-select
-                style="width: 100%;"
+              <a-input
                 v-decorator="[
                   'ishot',
                   {
@@ -322,15 +333,7 @@
                   }
                 ]"
                 placeholder=""
-              >
-                <a-select-option value="0">关</a-select-option>
-                <a-select-option value="1">开</a-select-option>
-              </a-select>
-            </a-form-item>
-            <a-form-item>
-              <a-button type="primary" @click="updateItem">
-                更新
-              </a-button>
+              />
             </a-form-item>
           </a-form>
         </a-col>
@@ -343,20 +346,60 @@
 import moment from "moment";
 import http from "../../utils/http";
 
+const list = [
+  {
+    fatherId: "0",
+    groupid: "0-1",
+    groupname: "菜单组1",
+    functionDTOS: [
+      {
+        id: "1",
+        name: "菜单组1功能1"
+      },
+      {
+        id: "2",
+        name: "菜单组1功能2"
+      }
+    ],
+    functionGroupDTOS: [
+      {
+        fatherId: "0-1",
+        groupid: "0-1-1",
+        groupname: "菜单组1菜单组1",
+        functionDTOS: [
+          {
+            id: "3",
+            name: "菜单组1菜单组1功能3"
+          }
+        ],
+        functionGroupDTOS: []
+      }
+    ]
+  }
+];
+
 export default {
   name: "Dashboard",
   components: {},
   data() {
     return {
-      topFuncs: [],
-      topfuncsKeys: [],
+      list,
+      treeData: [],
+      labelCol: {
+        lg: { span: 7 },
+        sm: { span: 7 }
+      },
+      wrapperCol: {
+        lg: { span: 10 },
+        sm: { span: 17 }
+      },
       groupForm: this.$form.createForm(this, { name: "groupForm" }),
-      groupFormVisible: false,
-      itemForm: this.$form.createForm(this, { name: "itemForm" }),
-      itemFormVisible: false
+      funcForm: this.$form.createForm(this, { name: "funcForm" })
     };
   },
   created() {
+    this.treeData = this.handleTreeData(this.list);
+    // this.log("treeData", this.treeData);
     this.getTopFuncs();
   },
   methods: {
@@ -368,113 +411,36 @@ export default {
         })
         .then(ret => {
           this.log("getTopFuncs", ret);
-          this.topFuncs = this.handleTreeData(ret);
         })
         .catch(err => {
           this.log("getTopFuncs", err);
         });
     },
-    handleTreeData(funcs) {
-      let _funcs = [];
-      funcs.map(func => {
-        let _func = {};
-        _func.title = func.functionname;
-        _func.key = `group####${func.functionid}`;
-        _func.children = [];
-        if (func.items && func.items.length > 0) {
-          func.items.map(item => {
-            _func.children.push({
-              title: item.itemname,
-              key: `item####${item.itemid}`
-            });
+    onSelectTree(arg, evt) {
+      this.log(arg, evt);
+    },
+    createGroup() {},
+    handleTreeData(groups) {
+      let rets = [];
+      groups.map(group => {
+        let ret = {};
+        ret.title = group.groupname;
+        ret.key = group.groupid;
+        ret.children = [];
+        if (group.functionDTOS && group.functionDTOS.length > 0) {
+          group.functionDTOS.map(func => {
+            ret.children.push({ title: func.name, key: func.id });
           });
         }
-        if (func.groupList && func.groupList.length > 0) {
-          _func.children = _func.children.concat(
-            this.handleTreeData(func.groupList)
+        if (group.functionGroupDTOS && group.functionGroupDTOS.length > 0) {
+          ret.children = ret.children.concat(
+            this.handleTreeData(group.functionGroupDTOS)
           );
         }
-        _funcs.push(_func);
+        rets.push(ret);
       });
-      return _funcs;
-    },
-    onSelectTree(keys) {
-      this.log("onSelectTree", keys);
-      this.groupFormVisible = false;
-      this.itemFormVisible = false;
-      this.topfuncsKeys = keys;
-      if (keys.length > 0) {
-        const key = keys[0];
-        const type = key.split("####")[0];
-        const id = key.split("####")[1];
-        if (type === "group") {
-          this.getGroup(id);
-        } else if (type === "item") {
-          this.getItem(id);
-        }
-      }
-    },
-    getGroup(id) {
-      http
-        .get({
-          url: "sys/function/no1/v2/group/info",
-          params: {
-            groupId: id
-          }
-        })
-        .then(ret => {
-          this.log("getGroup", ret);
-          this.groupFormVisible = true;
-          this.$nextTick(() => {
-            this.groupForm.setFieldsValue({
-              groupid: ret.groupid,
-              groupname: ret.groupname,
-              groupdesc: ret.groupdesc,
-              groupicon: ret.groupicon,
-              orderid: ret.orderid,
-              fatherId: ret.fatherId,
-              closed: ret.closed,
-              clients: ret.clients
-            });
-          });
-        })
-        .catch(err => {
-          this.log("getGroup", err);
-        });
-    },
-    getItem(id) {
-      http
-        .get({
-          url: "sys/function/no3/v2/item/info",
-          params: {
-            itemId: id
-          }
-        })
-        .then(ret => {
-          this.log("getItem", ret);
-          this.itemFormVisible = true;
-          this.$nextTick(() => {
-            this.itemForm.setFieldsValue({
-              anonymous: ret.anonymous,
-              clients: ret.clients,
-              closed: ret.closed,
-              groupid: ret.groupid,
-              id: ret.id,
-              ishot: ret.ishot,
-              name: ret.name,
-              orderid: ret.orderid,
-              topid: ret.topid,
-              icon: ret.icon,
-              url: ret.url
-            });
-          });
-        })
-        .catch(err => {
-          this.log("getItem", err);
-        });
-    },
-    updateGroup() {},
-    updateItem() {}
+      return rets;
+    }
   }
 };
 </script>
