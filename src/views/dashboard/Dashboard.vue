@@ -14,36 +14,27 @@
         </a-col>
         <a-col :span="9">
           <br />
-          <a-form :form="groupForm" layout="vertical" v-if="groupFormVisible">
-            <a-form-item label="客户端类型">
-              <a-input
-                v-decorator="[
-                  'clients',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        message: '请输入客户端类型'
-                      }
-                    ]
-                  }
-                ]"
-                placeholder="支持的客户端类型，多个用“#”号隔开"
-              />
-            </a-form-item>
+          <a-form
+            :form="groupForm"
+            @submit="updateGroup"
+            layout="vertical"
+            v-if="groupFormVisible"
+          >
             <a-form-item label="父组编码">
               <a-input
                 v-decorator="[
                   'fatherId',
                   {
                     rules: [
-                      {
-                        required: true,
-                        message: '请输入父组编码'
-                      }
+                      // todo
+                      // {
+                      //   required: true,
+                      //   message: '请输入父组编码'
+                      // }
                     ]
                   }
                 ]"
+                disabled
                 placeholder="请输入父组编码"
               />
             </a-form-item>
@@ -60,6 +51,7 @@
                     ]
                   }
                 ]"
+                disabled
                 placeholder="请输入组编码"
               />
             </a-form-item>
@@ -127,34 +119,6 @@
                 placeholder="请输入排序依据"
               />
             </a-form-item>
-            <a-form-item label="应用开关">
-              <a-select
-                style="width: 100%;"
-                v-decorator="[
-                  'closed',
-                  {
-                    rules: [
-                      {
-                        required: true,
-                        message: ''
-                      }
-                    ]
-                  }
-                ]"
-                placeholder=""
-              >
-                <a-select-option value="0">关</a-select-option>
-                <a-select-option value="1">开</a-select-option>
-              </a-select>
-            </a-form-item>
-            <a-form-item>
-              <a-button type="primary" @click="updateGroup">
-                更新
-              </a-button>
-            </a-form-item>
-          </a-form>
-
-          <a-form :form="itemForm" layout="vertical" v-if="itemFormVisible">
             <a-form-item label="客户端类型">
               <a-input
                 v-decorator="[
@@ -171,6 +135,34 @@
                 placeholder="支持的客户端类型，多个用“#”号隔开"
               />
             </a-form-item>
+            <a-form-item label="应用开关">
+              <a-switch
+                v-decorator="[
+                  'closed',
+                  {
+                    rules: [
+                      {
+                        required: true,
+                        message: ''
+                      }
+                    ]
+                  }
+                ]"
+              />
+            </a-form-item>
+            <a-form-item>
+              <a-button type="primary" html-type="submit">
+                更新
+              </a-button>
+            </a-form-item>
+          </a-form>
+
+          <a-form
+            :form="itemForm"
+            @submit="updateItem"
+            layout="vertical"
+            v-if="itemFormVisible"
+          >
             <a-form-item label="功能编码">
               <a-input
                 v-decorator="[
@@ -184,6 +176,7 @@
                     ]
                   }
                 ]"
+                disabled
                 placeholder="请输入功能编码"
               />
             </a-form-item>
@@ -267,9 +260,24 @@
                 placeholder="请输入首页排序依据"
               />
             </a-form-item>
+            <a-form-item label="客户端类型">
+              <a-input
+                v-decorator="[
+                  'clients',
+                  {
+                    rules: [
+                      {
+                        required: true,
+                        message: '请输入客户端类型'
+                      }
+                    ]
+                  }
+                ]"
+                placeholder="支持的客户端类型，多个用“#”号隔开"
+              />
+            </a-form-item>
             <a-form-item label="停用标识">
-              <a-select
-                style="width: 100%;"
+              <a-switch
                 v-decorator="[
                   'closed',
                   {
@@ -281,15 +289,10 @@
                     ]
                   }
                 ]"
-                placeholder=""
-              >
-                <a-select-option value="0">关</a-select-option>
-                <a-select-option value="1">开</a-select-option>
-              </a-select>
+              />
             </a-form-item>
             <a-form-item label="匿名标识">
-              <a-select
-                style="width: 100%;"
+              <a-switch
                 v-decorator="[
                   'anonymous',
                   {
@@ -301,15 +304,10 @@
                     ]
                   }
                 ]"
-                placeholder=""
-              >
-                <a-select-option value="0">关</a-select-option>
-                <a-select-option value="1">开</a-select-option>
-              </a-select>
+              />
             </a-form-item>
             <a-form-item label="热点标识">
-              <a-select
-                style="width: 100%;"
+              <a-switch
                 v-decorator="[
                   'ishot',
                   {
@@ -321,14 +319,10 @@
                     ]
                   }
                 ]"
-                placeholder=""
-              >
-                <a-select-option value="0">关</a-select-option>
-                <a-select-option value="1">开</a-select-option>
-              </a-select>
+              />
             </a-form-item>
             <a-form-item>
-              <a-button type="primary" @click="updateItem">
+              <a-button type="primary" html-type="submit">
                 更新
               </a-button>
             </a-form-item>
@@ -473,8 +467,67 @@ export default {
           this.log("getItem", err);
         });
     },
-    updateGroup() {},
-    updateItem() {}
+    updateGroup(e) {
+      e.preventDefault();
+      this.groupForm.validateFields((err, values) => {
+        if (!err) {
+          http
+            .put({
+              url: "sys/function/no2/v2/group/info",
+              data: {
+                groupid: values.groupid,
+                groupname: values.groupname,
+                groupdesc: values.groupdesc,
+                groupicon: values.groupicon,
+                orderid: values.orderid,
+                fatherId: values.fatherId,
+                closed: values.closed ? "1" : "0",
+                clients: values.clients
+              }
+            })
+            .then(ret => {
+              this.log("updateGroup", ret);
+              this.$message.success("更新成功");
+            })
+            .catch(err => {
+              this.log("updateGroup", err);
+              this.$message.error("更新失败");
+            });
+        }
+      });
+    },
+    updateItem(e) {
+      e.preventDefault();
+      this.itemForm.validateFields((err, values) => {
+        if (!err) {
+          http
+            .put({
+              url: "sys/function/no4/v2/item/info",
+              data: {
+                anonymous: values.anonymous ? "1" : "0",
+                clients: values.clients,
+                closed: values.closed ? "1" : "0",
+                groupid: values.groupid,
+                id: values.id,
+                ishot: values.ishot ? "1" : "0",
+                name: values.name,
+                orderid: values.orderid,
+                topid: values.topid,
+                icon: values.icon,
+                url: values.url
+              }
+            })
+            .then(ret => {
+              this.log("updateGroup", ret);
+              this.$message.success("更新成功");
+            })
+            .catch(err => {
+              this.log("updateGroup", err);
+              this.$message.error("更新失败");
+            });
+        }
+      });
+    }
   }
 };
 </script>
