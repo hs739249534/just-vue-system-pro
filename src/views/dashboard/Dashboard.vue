@@ -44,10 +44,10 @@
                   'groupid',
                   {
                     rules: [
-                      {
-                        required: true,
-                        message: '请输入组编码'
-                      }
+                      // {
+                      //   required: true,
+                      //   message: '请输入组编码'
+                      // }
                     ]
                   }
                 ]"
@@ -163,16 +163,33 @@
             layout="vertical"
             v-if="itemFormVisible"
           >
+            <a-form-item label="组编码">
+              <a-input
+                v-decorator="[
+                  'groupid',
+                  {
+                    rules: [
+                      // {
+                      //   required: true,
+                      //   message: '请输入组编码'
+                      // }
+                    ]
+                  }
+                ]"
+                disabled
+                placeholder="请输入组编码"
+              />
+            </a-form-item>
             <a-form-item label="功能编码">
               <a-input
                 v-decorator="[
                   'id',
                   {
                     rules: [
-                      {
-                        required: true,
-                        message: '请输入功能编码'
-                      }
+                      // {
+                      //   required: true,
+                      //   message: '请输入功能编码'
+                      // }
                     ]
                   }
                 ]"
@@ -218,10 +235,10 @@
                   'url',
                   {
                     rules: [
-                      {
-                        required: true,
-                        message: '请输入功能链接'
-                      }
+                      // {
+                      //   required: true,
+                      //   message: '请输入功能链接'
+                      // }
                     ]
                   }
                 ]"
@@ -356,9 +373,20 @@ export default {
   methods: {
     moment,
     getTopFuncs() {
+      // http
+      //   .get({
+      //     url: "sys/function/anonymous/v3/functions/top"
+      //   })
+      //   .then(ret => {
+      //     this.log("getTopFuncs", ret);
+      //     this.topFuncs = this.handleTreeData(ret);
+      //   })
+      //   .catch(err => {
+      //     this.log("getTopFuncs", err);
+      //   });
       http
         .get({
-          url: "sys/function/anonymous/v3/functions/top"
+          url: "sys/function/anonymous/v4/functions/top"
         })
         .then(ret => {
           this.log("getTopFuncs", ret);
@@ -369,23 +397,45 @@ export default {
         });
     },
     handleTreeData(funcs) {
+      // let _funcs = [];
+      // funcs.map(func => {
+      //   let _func = {};
+      //   _func.title = func.functionname;
+      //   _func.key = `group####${func.functionid}`;
+      //   _func.children = [];
+      //   if (func.items && func.items.length > 0) {
+      //     func.items.map(item => {
+      //       _func.children.push({
+      //         title: item.itemname,
+      //         key: `item####${item.itemid}`
+      //       });
+      //     });
+      //   }
+      //   if (func.groupList && func.groupList.length > 0) {
+      //     _func.children = _func.children.concat(
+      //       this.handleTreeData(func.groupList)
+      //     );
+      //   }
+      //   _funcs.push(_func);
+      // });
+      // return _funcs;
       let _funcs = [];
       funcs.map(func => {
         let _func = {};
-        _func.title = func.functionname;
-        _func.key = `group####${func.functionid}`;
+        _func.title = func.groupname;
+        _func.key = `group####${func.groupid}`;
         _func.children = [];
-        if (func.items && func.items.length > 0) {
-          func.items.map(item => {
+        if (func.functionDTOS && func.functionDTOS.length > 0) {
+          func.functionDTOS.map(item => {
             _func.children.push({
-              title: item.itemname,
-              key: `item####${item.itemid}`
+              title: item.name,
+              key: `item####${item.id}`
             });
           });
         }
-        if (func.groupList && func.groupList.length > 0) {
+        if (func.functionGroupDTOS && func.functionGroupDTOS.length > 0) {
           _func.children = _func.children.concat(
-            this.handleTreeData(func.groupList)
+            this.handleTreeData(func.functionGroupDTOS)
           );
         }
         _funcs.push(_func);
@@ -471,6 +521,7 @@ export default {
       e.preventDefault();
       this.groupForm.validateFields((err, values) => {
         if (!err) {
+          this.log("updateGroup values", values);
           http
             .put({
               url: "sys/function/no2/v2/group/info",
@@ -500,6 +551,7 @@ export default {
       e.preventDefault();
       this.itemForm.validateFields((err, values) => {
         if (!err) {
+          this.log("updateItem values", values);
           http
             .put({
               url: "sys/function/no4/v2/item/info",
