@@ -10,10 +10,13 @@
             :treeData="topFuncs"
             :selectedKeys="topfuncsKeys"
           >
+            <span slot="groupTitle" style="color: #1890ff">添加组</span>
+            <span slot="itemTitle" style="color: #1890ff">添加功能</span>
           </a-tree>
         </a-col>
         <a-col :span="9">
-          <br />
+          <br/>
+
           <a-form
             :form="groupForm"
             @submit="updateGroup"
@@ -44,14 +47,14 @@
                   'groupid',
                   {
                     rules: [
-                      // {
-                      //   required: true,
-                      //   message: '请输入组编码'
-                      // }
+                      {
+                        required: true,
+                        message: '请输入组编码'
+                      }
                     ]
                   }
                 ]"
-                disabled
+                :disabled="isUpdate"
                 placeholder="请输入组编码"
               />
             </a-form-item>
@@ -152,7 +155,8 @@
             </a-form-item>
             <a-form-item>
               <a-button type="primary" html-type="submit">
-                更新
+                <span v-if="isUpdate">更新</span>
+                <span v-else>新建</span>
               </a-button>
             </a-form-item>
           </a-form>
@@ -186,14 +190,14 @@
                   'id',
                   {
                     rules: [
-                      // {
-                      //   required: true,
-                      //   message: '请输入功能编码'
-                      // }
+                      {
+                        required: true,
+                        message: '请输入功能编码'
+                      }
                     ]
                   }
                 ]"
-                disabled
+                :disabled="isUpdate"
                 placeholder="请输入功能编码"
               />
             </a-form-item>
@@ -340,7 +344,8 @@
             </a-form-item>
             <a-form-item>
               <a-button type="primary" html-type="submit">
-                更新
+                <span v-if="isUpdate">更新</span>
+                <span v-else>新建</span>
               </a-button>
             </a-form-item>
           </a-form>
@@ -361,10 +366,11 @@ export default {
     return {
       topFuncs: [],
       topfuncsKeys: [],
-      groupForm: this.$form.createForm(this, { name: "groupForm" }),
+      groupForm: this.$form.createForm(this, {name: "groupForm"}),
       groupFormVisible: false,
-      itemForm: this.$form.createForm(this, { name: "itemForm" }),
-      itemFormVisible: false
+      itemForm: this.$form.createForm(this, {name: "itemForm"}),
+      itemFormVisible: false,
+      isUpdate: false
     };
   },
   created() {
@@ -373,17 +379,6 @@ export default {
   methods: {
     moment,
     getTopFuncs() {
-      // http
-      //   .get({
-      //     url: "sys/function/anonymous/v3/functions/top"
-      //   })
-      //   .then(ret => {
-      //     this.log("getTopFuncs", ret);
-      //     this.topFuncs = this.handleTreeData(ret);
-      //   })
-      //   .catch(err => {
-      //     this.log("getTopFuncs", err);
-      //   });
       http
         .get({
           url: "sys/function/anonymous/v4/functions/top"
@@ -397,28 +392,6 @@ export default {
         });
     },
     handleTreeData(funcs) {
-      // let _funcs = [];
-      // funcs.map(func => {
-      //   let _func = {};
-      //   _func.title = func.functionname;
-      //   _func.key = `group####${func.functionid}`;
-      //   _func.children = [];
-      //   if (func.items && func.items.length > 0) {
-      //     func.items.map(item => {
-      //       _func.children.push({
-      //         title: item.itemname,
-      //         key: `item####${item.itemid}`
-      //       });
-      //     });
-      //   }
-      //   if (func.groupList && func.groupList.length > 0) {
-      //     _func.children = _func.children.concat(
-      //       this.handleTreeData(func.groupList)
-      //     );
-      //   }
-      //   _funcs.push(_func);
-      // });
-      // return _funcs;
       let _funcs = [];
       funcs.map(func => {
         let _func = {};
@@ -438,6 +411,18 @@ export default {
             this.handleTreeData(func.functionGroupDTOS)
           );
         }
+        _func.children.push({
+          key: `create-group####${func.groupid}`,
+          slots: {
+            title: "groupTitle"
+          }
+        });
+        _func.children.push({
+          key: `create-item####${func.groupid}`,
+          slots: {
+            title: "itemTitle"
+          }
+        });
         _funcs.push(_func);
       });
       return _funcs;
@@ -452,9 +437,17 @@ export default {
         const type = key.split("####")[0];
         const id = key.split("####")[1];
         if (type === "group") {
+          this.isUpdate = true
           this.getGroup(id);
         } else if (type === "item") {
+          this.isUpdate = true
           this.getItem(id);
+        } else if (type === "create-group") {
+          this.isUpdate = false
+          this.createGroup(id);
+        } else if (type === "create-item") {
+          this.isUpdate = false
+          this.createItem(id);
         }
       }
     },
@@ -538,11 +531,11 @@ export default {
             })
             .then(ret => {
               this.log("updateGroup", ret);
-              this.$message.success("更新成功");
+              this.$message.success("新建/更新成功");
             })
             .catch(err => {
               this.log("updateGroup", err);
-              this.$message.error("更新失败");
+              this.$message.error("新建/更新失败");
             });
         }
       });
@@ -571,15 +564,35 @@ export default {
             })
             .then(ret => {
               this.log("updateGroup", ret);
-              this.$message.success("更新成功");
+              this.$message.success("新建/更新成功");
             })
             .catch(err => {
               this.log("updateGroup", err);
-              this.$message.error("更新失败");
+              this.$message.error("新建/更新失败");
             });
         }
       });
-    }
+    },
+    createGroup(id) {
+      this.log("createGroup", id);
+      this.groupFormVisible = true;
+      this.$nextTick(() => {
+        this.groupForm.resetFields();
+        this.groupForm.setFieldsValue({
+          fatherId: id
+        });
+      });
+    },
+    createItem(id) {
+      this.log("createGroup", id);
+      this.itemFormVisible = true;
+      this.$nextTick(() => {
+        this.itemForm.resetFields();
+        this.itemForm.setFieldsValue({
+          groupid: id,
+        });
+      });
+    },
   }
 };
 </script>
