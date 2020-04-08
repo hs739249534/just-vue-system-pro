@@ -15,7 +15,7 @@
           </a-tree>
         </a-col>
         <a-col :span="9">
-          <br/>
+          <br />
 
           <a-form
             :form="groupForm"
@@ -143,11 +143,12 @@
                 v-decorator="[
                   'closed',
                   {
+                    valuePropName: 'checked',
                     rules: [
-                      {
-                        required: true,
-                        message: ''
-                      }
+                      // {
+                      //   required: true,
+                      //   message: ''
+                      // }
                     ]
                   }
                 ]"
@@ -302,11 +303,12 @@
                 v-decorator="[
                   'closed',
                   {
+                    valuePropName: 'checked',
                     rules: [
-                      {
-                        required: true,
-                        message: ''
-                      }
+                      // {
+                      //   required: true,
+                      //   message: ''
+                      // }
                     ]
                   }
                 ]"
@@ -317,11 +319,12 @@
                 v-decorator="[
                   'anonymous',
                   {
+                    valuePropName: 'checked',
                     rules: [
-                      {
-                        required: true,
-                        message: ''
-                      }
+                      // {
+                      //   required: true,
+                      //   message: ''
+                      // }
                     ]
                   }
                 ]"
@@ -332,11 +335,12 @@
                 v-decorator="[
                   'ishot',
                   {
+                    valuePropName: 'checked',
                     rules: [
-                      {
-                        required: true,
-                        message: ''
-                      }
+                      // {
+                      //   required: true,
+                      //   message: ''
+                      // }
                     ]
                   }
                 ]"
@@ -366,9 +370,9 @@ export default {
     return {
       topFuncs: [],
       topfuncsKeys: [],
-      groupForm: this.$form.createForm(this, {name: "groupForm"}),
+      groupForm: this.$form.createForm(this, { name: "groupForm" }),
       groupFormVisible: false,
-      itemForm: this.$form.createForm(this, {name: "itemForm"}),
+      itemForm: this.$form.createForm(this, { name: "itemForm" }),
       itemFormVisible: false,
       isUpdate: false
     };
@@ -437,16 +441,16 @@ export default {
         const type = key.split("####")[0];
         const id = key.split("####")[1];
         if (type === "group") {
-          this.isUpdate = true
+          this.isUpdate = true;
           this.getGroup(id);
         } else if (type === "item") {
-          this.isUpdate = true
+          this.isUpdate = true;
           this.getItem(id);
         } else if (type === "create-group") {
-          this.isUpdate = false
+          this.isUpdate = false;
           this.createGroup(id);
         } else if (type === "create-item") {
-          this.isUpdate = false
+          this.isUpdate = false;
           this.createItem(id);
         }
       }
@@ -470,7 +474,7 @@ export default {
               groupicon: ret.groupicon,
               orderid: ret.orderid,
               fatherId: ret.fatherId,
-              closed: ret.closed,
+              closed: ret.closed === "1" ? true : false,
               clients: ret.clients
             });
           });
@@ -492,12 +496,12 @@ export default {
           this.itemFormVisible = true;
           this.$nextTick(() => {
             this.itemForm.setFieldsValue({
-              anonymous: ret.anonymous,
+              anonymous: ret.anonymous === "1" ? true : false,
               clients: ret.clients,
-              closed: ret.closed,
+              closed: ret.closed === "1" ? true : false,
               groupid: ret.groupid,
               id: ret.id,
-              ishot: ret.ishot,
+              ishot: ret.ishot === "1" ? true : false,
               name: ret.name,
               orderid: ret.orderid,
               topid: ret.topid,
@@ -589,10 +593,10 @@ export default {
       this.$nextTick(() => {
         this.itemForm.resetFields();
         this.itemForm.setFieldsValue({
-          groupid: id,
+          groupid: id
         });
       });
-    },
+    }
   }
 };
 </script>
