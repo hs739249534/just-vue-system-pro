@@ -390,6 +390,12 @@ export default {
         .then(ret => {
           this.log("getTopFuncs", ret);
           this.topFuncs = this.handleTreeData(ret);
+          this.topFuncs.push({
+            key: `create-root####`,
+            slots: {
+              title: "groupTitle"
+            }
+          });
         })
         .catch(err => {
           this.log("getTopFuncs", err);
@@ -452,6 +458,9 @@ export default {
         } else if (type === "create-item") {
           this.isUpdate = false;
           this.createItem(id);
+        } else if (type === "create-root") {
+          this.isUpdate = false;
+          this.createGroup("");
         }
       }
     },
