@@ -1,8 +1,8 @@
 <template>
   <a-card :bordered="false">
     <div class="table-page">
-      <a-row>
-        <a-col :span="7">
+      <a-row :gutter="16">
+        <a-col :span="6">
           <a-tree
             showLine
             defaultExpandAll
@@ -14,7 +14,7 @@
             <span slot="itemTitle" style="color: #1890ff">添加功能</span>
           </a-tree>
         </a-col>
-        <a-col :span="9">
+        <a-col :span="14">
           <br />
 
           <a-form
@@ -23,143 +23,227 @@
             layout="vertical"
             v-if="groupFormVisible"
           >
-            <a-form-item label="父组编码">
-              <a-input
-                v-decorator="[
-                  'fatherId',
-                  {
-                    rules: [
-                      // todo
-                      // {
-                      //   required: true,
-                      //   message: '请输入父组编码'
-                      // }
-                    ]
-                  }
-                ]"
-                disabled
-                placeholder="请输入父组编码"
-              />
-            </a-form-item>
-            <a-form-item label="组编码">
-              <a-input
-                v-decorator="[
-                  'groupid',
-                  {
-                    rules: [
+            <a-row :gutter="32">
+              <a-col :span="12">
+                <a-form-item label="父组编码">
+                  <a-input
+                    v-decorator="[
+                      'fatherId',
                       {
-                        required: true,
-                        message: '请输入组编码'
+                        rules: [
+                          // todo
+                          // {
+                          //   required: true,
+                          //   message: '请输入父组编码'
+                          // }
+                        ]
                       }
-                    ]
-                  }
-                ]"
-                :disabled="isUpdate"
-                placeholder="请输入组编码"
-              />
-            </a-form-item>
-            <a-form-item label="组名称">
-              <a-input
-                v-decorator="[
-                  'groupname',
-                  {
-                    rules: [
+                    ]"
+                    disabled
+                    placeholder="请输入父组编码"
+                  />
+                </a-form-item>
+                <a-form-item label="组编码">
+                  <a-input
+                    v-decorator="[
+                      'groupid',
                       {
-                        required: true,
-                        message: '请输入组名称'
+                        rules: [
+                          {
+                            required: true,
+                            message: '请输入组编码'
+                          }
+                        ]
                       }
-                    ]
-                  }
-                ]"
-                placeholder="请输入组名称"
-              />
-            </a-form-item>
-            <a-form-item label="组描述">
-              <a-input
-                v-decorator="[
-                  'groupdesc',
-                  {
-                    rules: [
+                    ]"
+                    :disabled="isUpdate"
+                    placeholder="请输入组编码"
+                  />
+                </a-form-item>
+                <a-form-item label="组名称">
+                  <a-input
+                    v-decorator="[
+                      'groupname',
                       {
-                        required: true,
-                        message: '请输入组描述'
+                        rules: [
+                          {
+                            required: true,
+                            message: '请输入组名称'
+                          }
+                        ]
                       }
-                    ]
-                  }
-                ]"
-                placeholder="请输入组描述"
-              />
-            </a-form-item>
-            <a-form-item label="组图标">
-              <a-input
-                v-decorator="[
-                  'groupicon',
-                  {
-                    rules: [
+                    ]"
+                    placeholder="请输入组名称"
+                  />
+                </a-form-item>
+                <a-form-item label="组描述">
+                  <a-input
+                    v-decorator="[
+                      'groupdesc',
                       {
-                        required: true,
-                        message: '请输入组图标链接'
+                        rules: [
+                          {
+                            required: true,
+                            message: '请输入组描述'
+                          }
+                        ]
                       }
-                    ]
-                  }
-                ]"
-                placeholder="请输入组图标链接"
-              />
-            </a-form-item>
-            <a-form-item label="排序依据">
-              <a-input
-                v-decorator="[
-                  'orderid',
-                  {
-                    rules: [
+                    ]"
+                    placeholder="请输入组描述"
+                  />
+                </a-form-item>
+                <a-form-item label="组图标标志">
+                  <a-switch
+                    v-decorator="[
+                      'iconFlag',
                       {
-                        required: true,
-                        message: '请输入排序依据'
+                        valuePropName: 'checked',
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: ''
+                          // }
+                        ]
                       }
-                    ]
-                  }
-                ]"
-                placeholder="请输入排序依据"
-              />
-            </a-form-item>
-            <a-form-item label="客户端类型">
-              <a-input
-                v-decorator="[
-                  'clients',
-                  {
-                    rules: [
+                    ]"
+                  />
+                </a-form-item>
+                <a-form-item
+                  v-if="!groupForm.getFieldValue('iconFlag')"
+                  label="组图标链接"
+                >
+                  <a-input
+                    v-decorator="[
+                      'groupicon',
                       {
-                        required: true,
-                        message: '请输入客户端类型'
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: ''
+                          // }
+                        ]
                       }
-                    ]
-                  }
-                ]"
-                placeholder="支持的客户端类型，多个用“#”号隔开"
-              />
-            </a-form-item>
-            <a-form-item label="应用开关">
-              <a-switch
-                v-decorator="[
-                  'closed',
-                  {
-                    valuePropName: 'checked',
-                    rules: [
-                      // {
-                      //   required: true,
-                      //   message: ''
-                      // }
-                    ]
-                  }
-                ]"
-              />
-            </a-form-item>
-            <a-form-item>
-              <a-button type="primary" html-type="submit">
-                <span v-if="isUpdate">更新</span>
-                <span v-else>新建</span>
-              </a-button>
-            </a-form-item>
+                    ]"
+                    placeholder="请输入组图标链接"
+                  />
+                </a-form-item>
+                <a-form-item
+                  v-if="groupForm.getFieldValue('iconFlag')"
+                  label="组图标根链接"
+                >
+                  <a-input
+                    v-decorator="[
+                      'baseUrl',
+                      {
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: ''
+                          // }
+                        ]
+                      }
+                    ]"
+                    placeholder="请输入组图标根链接"
+                  />
+                </a-form-item>
+                <a-form-item
+                  v-if="groupForm.getFieldValue('iconFlag')"
+                  label="组图标中间链接"
+                >
+                  <a-input
+                    v-decorator="[
+                      'midUrl',
+                      {
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: ''
+                          // }
+                        ]
+                      }
+                    ]"
+                    placeholder="请输入组图标中间链接"
+                  />
+                </a-form-item>
+                <a-form-item
+                  v-if="groupForm.getFieldValue('iconFlag')"
+                  label="组图标文件"
+                >
+                  <a-upload
+                    v-decorator="[
+                      'iconFile',
+                      {
+                        valuePropName: 'fileList',
+                        getValueFromEvent: returnFile
+                      }
+                    ]"
+                    :beforeUpload="handleFile"
+                    list-type="picture"
+                  >
+                    <a-button>
+                      <a-icon type="upload" />
+                      选择文件
+                    </a-button>
+                  </a-upload>
+                </a-form-item>
+                <a-form-item label="排序依据">
+                  <a-input
+                    v-decorator="[
+                      'orderid',
+                      {
+                        rules: [
+                          {
+                            required: true,
+                            message: '请输入排序依据'
+                          }
+                        ]
+                      }
+                    ]"
+                    placeholder="请输入排序依据"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item label="客户端类型">
+                  <a-input
+                    v-decorator="[
+                      'clients',
+                      {
+                        rules: [
+                          {
+                            required: true,
+                            message: '请输入客户端类型'
+                          }
+                        ]
+                      }
+                    ]"
+                    placeholder="支持的客户端类型，多个用“#”号隔开"
+                  />
+                </a-form-item>
+                <a-form-item label="应用开关">
+                  <a-switch
+                    v-decorator="[
+                      'closed',
+                      {
+                        valuePropName: 'checked',
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: ''
+                          // }
+                        ]
+                      }
+                    ]"
+                  />
+                </a-form-item>
+                <a-form-item>
+                  <a-button type="primary" html-type="submit">
+                    <span v-if="isUpdate">更新</span>
+                    <span v-else>新建</span>
+                  </a-button>
+                </a-form-item>
+              </a-col>
+            </a-row>
           </a-form>
 
           <a-form
@@ -168,190 +252,274 @@
             layout="vertical"
             v-if="itemFormVisible"
           >
-            <a-form-item label="组编码">
-              <a-input
-                v-decorator="[
-                  'groupid',
-                  {
-                    rules: [
-                      // {
-                      //   required: true,
-                      //   message: '请输入组编码'
-                      // }
-                    ]
-                  }
-                ]"
-                disabled
-                placeholder="请输入组编码"
-              />
-            </a-form-item>
-            <a-form-item label="功能编码">
-              <a-input
-                v-decorator="[
-                  'id',
-                  {
-                    rules: [
+            <a-row :gutter="32">
+              <a-col :span="12">
+                <a-form-item label="组编码">
+                  <a-input
+                    v-decorator="[
+                      'groupid',
                       {
-                        required: true,
-                        message: '请输入功能编码'
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: '请输入组编码'
+                          // }
+                        ]
                       }
-                    ]
-                  }
-                ]"
-                :disabled="isUpdate"
-                placeholder="请输入功能编码"
-              />
-            </a-form-item>
-            <a-form-item label="功能名称">
-              <a-input
-                v-decorator="[
-                  'name',
-                  {
-                    rules: [
+                    ]"
+                    disabled
+                    placeholder="请输入组编码"
+                  />
+                </a-form-item>
+                <a-form-item label="功能编码">
+                  <a-input
+                    v-decorator="[
+                      'id',
                       {
-                        required: true,
-                        message: '请输入功能名称'
+                        rules: [
+                          {
+                            required: true,
+                            message: '请输入功能编码'
+                          }
+                        ]
                       }
-                    ]
-                  }
-                ]"
-                placeholder="请输入功能名称"
-              />
-            </a-form-item>
-            <a-form-item label="功能图标">
-              <a-input
-                v-decorator="[
-                  'icon',
-                  {
-                    rules: [
+                    ]"
+                    :disabled="isUpdate"
+                    placeholder="请输入功能编码"
+                  />
+                </a-form-item>
+                <a-form-item label="功能名称">
+                  <a-input
+                    v-decorator="[
+                      'name',
                       {
-                        required: true,
-                        message: '请输入功能图标'
+                        rules: [
+                          {
+                            required: true,
+                            message: '请输入功能名称'
+                          }
+                        ]
                       }
-                    ]
-                  }
-                ]"
-                placeholder="请输入功能图标"
-              />
-            </a-form-item>
-            <a-form-item label="功能链接">
-              <a-input
-                v-decorator="[
-                  'url',
-                  {
-                    rules: [
-                      // {
-                      //   required: true,
-                      //   message: '请输入功能链接'
-                      // }
-                    ]
-                  }
-                ]"
-                placeholder="请输入功能链接"
-              />
-            </a-form-item>
-            <a-form-item label="排序依据">
-              <a-input
-                v-decorator="[
-                  'orderid',
-                  {
-                    rules: [
+                    ]"
+                    placeholder="请输入功能名称"
+                  />
+                </a-form-item>
+                <a-form-item label="功能图标标志">
+                  <a-switch
+                    v-decorator="[
+                      'iconFlag',
                       {
-                        required: true,
-                        message: '请输入排序依据'
+                        valuePropName: 'checked',
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: ''
+                          // }
+                        ]
                       }
-                    ]
-                  }
-                ]"
-                placeholder="请输入排序依据"
-              />
-            </a-form-item>
-            <a-form-item label="首页排序依据">
-              <a-input
-                v-decorator="[
-                  'topid',
-                  {
-                    rules: [
+                    ]"
+                  />
+                </a-form-item>
+                <a-form-item
+                  v-if="!itemForm.getFieldValue('iconFlag')"
+                  label="功能图标链接"
+                >
+                  <a-input
+                    v-decorator="[
+                      'icon',
                       {
-                        required: true,
-                        message: '请输入首页排序依据'
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: ''
+                          // }
+                        ]
                       }
-                    ]
-                  }
-                ]"
-                placeholder="请输入首页排序依据"
-              />
-            </a-form-item>
-            <a-form-item label="客户端类型">
-              <a-input
-                v-decorator="[
-                  'clients',
-                  {
-                    rules: [
+                    ]"
+                    placeholder="请输入功能图标链接"
+                  />
+                </a-form-item>
+                <a-form-item
+                  v-if="itemForm.getFieldValue('iconFlag')"
+                  label="功能图标根链接"
+                >
+                  <a-input
+                    v-decorator="[
+                      'baseUrl',
                       {
-                        required: true,
-                        message: '请输入客户端类型'
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: ''
+                          // }
+                        ]
                       }
-                    ]
-                  }
-                ]"
-                placeholder="支持的客户端类型，多个用“#”号隔开"
-              />
-            </a-form-item>
-            <a-form-item label="停用标识">
-              <a-switch
-                v-decorator="[
-                  'closed',
-                  {
-                    valuePropName: 'checked',
-                    rules: [
-                      // {
-                      //   required: true,
-                      //   message: ''
-                      // }
-                    ]
-                  }
-                ]"
-              />
-            </a-form-item>
-            <a-form-item label="匿名标识">
-              <a-switch
-                v-decorator="[
-                  'anonymous',
-                  {
-                    valuePropName: 'checked',
-                    rules: [
-                      // {
-                      //   required: true,
-                      //   message: ''
-                      // }
-                    ]
-                  }
-                ]"
-              />
-            </a-form-item>
-            <a-form-item label="热点标识">
-              <a-switch
-                v-decorator="[
-                  'ishot',
-                  {
-                    valuePropName: 'checked',
-                    rules: [
-                      // {
-                      //   required: true,
-                      //   message: ''
-                      // }
-                    ]
-                  }
-                ]"
-              />
-            </a-form-item>
-            <a-form-item>
-              <a-button type="primary" html-type="submit">
-                <span v-if="isUpdate">更新</span>
-                <span v-else>新建</span>
-              </a-button>
-            </a-form-item>
+                    ]"
+                    placeholder="请输入功能图标根链接"
+                  />
+                </a-form-item>
+                <a-form-item
+                  v-if="itemForm.getFieldValue('iconFlag')"
+                  label="功能图标中间链接"
+                >
+                  <a-input
+                    v-decorator="[
+                      'midUrl',
+                      {
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: ''
+                          // }
+                        ]
+                      }
+                    ]"
+                    placeholder="请输入功能图标中间链接"
+                  />
+                </a-form-item>
+                <a-form-item
+                  v-if="itemForm.getFieldValue('iconFlag')"
+                  label="功能图标文件"
+                >
+                  <a-upload
+                    v-decorator="[
+                      'iconFile',
+                      {
+                        valuePropName: 'fileList',
+                        getValueFromEvent: returnFile
+                      }
+                    ]"
+                    :beforeUpload="handleFile"
+                    list-type="picture"
+                  >
+                    <a-button>
+                      <a-icon type="upload" />
+                      选择文件
+                    </a-button>
+                  </a-upload>
+                </a-form-item>
+                <a-form-item label="排序依据">
+                  <a-input
+                    v-decorator="[
+                      'orderid',
+                      {
+                        rules: [
+                          {
+                            required: true,
+                            message: '请输入排序依据'
+                          }
+                        ]
+                      }
+                    ]"
+                    placeholder="请输入排序依据"
+                  />
+                </a-form-item>
+              </a-col>
+              <a-col :span="12">
+                <a-form-item label="首页排序依据">
+                  <a-input
+                    v-decorator="[
+                      'topid',
+                      {
+                        rules: [
+                          {
+                            required: true,
+                            message: '请输入首页排序依据'
+                          }
+                        ]
+                      }
+                    ]"
+                    placeholder="请输入首页排序依据"
+                  />
+                </a-form-item>
+                <a-form-item label="客户端类型">
+                  <a-input
+                    v-decorator="[
+                      'clients',
+                      {
+                        rules: [
+                          {
+                            required: true,
+                            message: '请输入客户端类型'
+                          }
+                        ]
+                      }
+                    ]"
+                    placeholder="支持的客户端类型，多个用“#”号隔开"
+                  />
+                </a-form-item>
+                <a-form-item label="Web链接">
+                  <a-input
+                    v-decorator="[
+                      'url',
+                      {
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: '请输入功能链接'
+                          // }
+                        ]
+                      }
+                    ]"
+                    placeholder="请输入功能链接"
+                  />
+                </a-form-item>
+                <a-form-item label="停用标识">
+                  <a-switch
+                    v-decorator="[
+                      'closed',
+                      {
+                        valuePropName: 'checked',
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: ''
+                          // }
+                        ]
+                      }
+                    ]"
+                  />
+                </a-form-item>
+                <a-form-item label="匿名标识">
+                  <a-switch
+                    v-decorator="[
+                      'anonymous',
+                      {
+                        valuePropName: 'checked',
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: ''
+                          // }
+                        ]
+                      }
+                    ]"
+                  />
+                </a-form-item>
+                <a-form-item label="热点标识">
+                  <a-switch
+                    v-decorator="[
+                      'ishot',
+                      {
+                        valuePropName: 'checked',
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: ''
+                          // }
+                        ]
+                      }
+                    ]"
+                  />
+                </a-form-item>
+                <a-form-item>
+                  <a-button type="primary" html-type="submit">
+                    <span v-if="isUpdate">更新</span>
+                    <span v-else>新建</span>
+                  </a-button>
+                </a-form-item>
+              </a-col>
+            </a-row>
           </a-form>
         </a-col>
       </a-row>
@@ -528,6 +696,15 @@ export default {
       this.groupForm.validateFields((err, values) => {
         if (!err) {
           this.log("updateGroup values", values);
+          let iconFile = undefined;
+          if (
+            values.iconFile &&
+            values.iconFile.length > 0 &&
+            values.iconFile[0].thumbUrl
+          ) {
+            let b64 = values.iconFile[0].thumbUrl;
+            iconFile = b64.split(",")[1];
+          }
           http
             .put({
               url: "sys/function/no2/v2/group/info",
@@ -539,12 +716,17 @@ export default {
                 orderid: values.orderid,
                 fatherId: values.fatherId,
                 closed: values.closed ? "1" : "0",
-                clients: values.clients
+                clients: values.clients,
+                iconFlag: values.iconFlag ? "1" : "0",
+                baseUrl: values.baseUrl,
+                midUrl: values.midUrl,
+                iconFile
               }
             })
             .then(ret => {
               this.log("updateGroup", ret);
               this.$message.success("新建/更新成功");
+              this.getTopFuncs();
             })
             .catch(err => {
               this.log("updateGroup", err);
@@ -558,6 +740,15 @@ export default {
       this.itemForm.validateFields((err, values) => {
         if (!err) {
           this.log("updateItem values", values);
+          let iconFile = undefined;
+          if (
+            values.iconFile &&
+            values.iconFile.length > 0 &&
+            values.iconFile[0].thumbUrl
+          ) {
+            let b64 = values.iconFile[0].thumbUrl;
+            iconFile = b64.split(",")[1];
+          }
           http
             .put({
               url: "sys/function/no4/v2/item/info",
@@ -572,12 +763,17 @@ export default {
                 orderid: values.orderid,
                 topid: values.topid,
                 icon: values.icon,
-                url: values.url
+                url: values.url,
+                iconFlag: values.iconFlag ? "1" : "0",
+                baseUrl: values.baseUrl,
+                midUrl: values.midUrl,
+                iconFile
               }
             })
             .then(ret => {
               this.log("updateGroup", ret);
               this.$message.success("新建/更新成功");
+              this.getTopFuncs();
             })
             .catch(err => {
               this.log("updateGroup", err);
@@ -605,6 +801,15 @@ export default {
           groupid: id
         });
       });
+    },
+    returnFile(e) {
+      if (Array.isArray(e)) {
+        return e;
+      }
+      return e && e.fileList;
+    },
+    handleFile() {
+      return false;
     }
   }
 };
