@@ -3,16 +3,22 @@
     <div class="table-page">
       <a-row :gutter="16">
         <a-col :span="6">
-          <a-tree
-            showLine
-            defaultExpandAll
-            @select="onSelectTree"
-            :treeData="topFuncs"
-            :selectedKeys="topfuncsKeys"
-          >
-            <span slot="groupTitle" style="color: #1890ff">添加组</span>
-            <span slot="itemTitle" style="color: #1890ff">添加功能</span>
-          </a-tree>
+          <div class="tree-limited">
+            <a-tree
+              showIcon
+              defaultExpandAll
+              @select="onSelectTree"
+              :treeData="topFuncs"
+              :selectedKeys="topfuncsKeys"
+            >
+              <span slot="groupTitle" style="color: #1890ff">添加组</span>
+              <span slot="itemTitle" style="color: #1890ff">添加功能</span>
+              <a-icon type="folder" slot="groupIcon" />
+              <a-icon type="folder-add" slot="addGroupIcon" />
+              <a-icon type="file" slot="itemIcon" />
+              <a-icon type="file-add" slot="addItemIcon" />
+            </a-tree>
+          </div>
         </a-col>
         <a-col :span="14">
           <br />
@@ -73,23 +79,8 @@
                         ]
                       }
                     ]"
+                    @change="handleGroupNameChange"
                     placeholder="请输入组名称"
-                  />
-                </a-form-item>
-                <a-form-item label="组描述">
-                  <a-input
-                    v-decorator="[
-                      'groupdesc',
-                      {
-                        rules: [
-                          {
-                            required: true,
-                            message: '请输入组描述'
-                          }
-                        ]
-                      }
-                    ]"
-                    placeholder="请输入组描述"
                   />
                 </a-form-item>
                 <a-form-item label="组图标标志">
@@ -192,10 +183,10 @@
                       'orderid',
                       {
                         rules: [
-                          {
-                            required: true,
-                            message: '请输入排序依据'
-                          }
+                          // {
+                          //   required: true,
+                          //   message: '请输入排序依据'
+                          // }
                         ]
                       }
                     ]"
@@ -220,7 +211,23 @@
                     placeholder="支持的客户端类型，多个用“#”号隔开"
                   />
                 </a-form-item>
-                <a-form-item label="应用开关">
+                <a-form-item label="组描述">
+                  <a-input
+                    v-decorator="[
+                      'groupdesc',
+                      {
+                        rules: [
+                          // {
+                          //   required: true,
+                          //   message: '请输入组描述'
+                          // }
+                        ]
+                      }
+                    ]"
+                    placeholder="请输入组描述"
+                  />
+                </a-form-item>
+                <a-form-item label="停用标识">
                   <a-switch
                     v-decorator="[
                       'closed',
@@ -301,6 +308,7 @@
                         ]
                       }
                     ]"
+                    @change="handleNameChange"
                     placeholder="请输入功能名称"
                   />
                 </a-form-item>
@@ -404,10 +412,10 @@
                       'orderid',
                       {
                         rules: [
-                          {
-                            required: true,
-                            message: '请输入排序依据'
-                          }
+                          // {
+                          //   required: true,
+                          //   message: '请输入排序依据'
+                          // }
                         ]
                       }
                     ]"
@@ -416,22 +424,6 @@
                 </a-form-item>
               </a-col>
               <a-col :span="12">
-                <a-form-item label="首页排序依据">
-                  <a-input
-                    v-decorator="[
-                      'topid',
-                      {
-                        rules: [
-                          {
-                            required: true,
-                            message: '请输入首页排序依据'
-                          }
-                        ]
-                      }
-                    ]"
-                    placeholder="请输入首页排序依据"
-                  />
-                </a-form-item>
                 <a-form-item label="客户端类型">
                   <a-input
                     v-decorator="[
@@ -446,6 +438,22 @@
                       }
                     ]"
                     placeholder="支持的客户端类型，多个用“#”号隔开"
+                  />
+                </a-form-item>
+                <a-form-item label="首页排序依据">
+                  <a-input
+                    v-decorator="[
+                      'topid',
+                      {
+                        rules: [
+                          {
+                            // required: true,
+                            // message: '请输入首页排序依据'
+                          }
+                        ]
+                      }
+                    ]"
+                    placeholder="请输入首页排序依据"
                   />
                 </a-form-item>
                 <a-form-item label="Web链接">
@@ -530,6 +538,7 @@
 <script>
 import moment from "moment";
 import http from "../../utils/http";
+import pinyin from "pinyin";
 
 export default {
   name: "Dashboard",
@@ -561,7 +570,8 @@ export default {
           this.topFuncs.push({
             key: `create-root####`,
             slots: {
-              title: "groupTitle"
+              title: "groupTitle",
+              icon: "addGroupIcon"
             }
           });
         })
@@ -573,14 +583,20 @@ export default {
       let _funcs = [];
       funcs.map(func => {
         let _func = {};
-        _func.title = func.groupname;
+        _func.title = `${func.groupname}  [ ${func.count1}/${func.count2} ]`;
         _func.key = `group####${func.groupid}`;
+        _func.slots = {
+          icon: "groupIcon"
+        };
         _func.children = [];
         if (func.functionDTOS && func.functionDTOS.length > 0) {
           func.functionDTOS.map(item => {
             _func.children.push({
               title: item.name,
-              key: `item####${item.id}`
+              key: `item####${item.id}`,
+              slots: {
+                icon: "itemIcon"
+              }
             });
           });
         }
@@ -592,13 +608,15 @@ export default {
         _func.children.push({
           key: `create-group####${func.groupid}`,
           slots: {
-            title: "groupTitle"
+            title: "groupTitle",
+            icon: "addGroupIcon"
           }
         });
         _func.children.push({
           key: `create-item####${func.groupid}`,
           slots: {
-            title: "itemTitle"
+            title: "itemTitle",
+            icon: "addItemIcon"
           }
         });
         _funcs.push(_func);
@@ -788,7 +806,8 @@ export default {
       this.$nextTick(() => {
         this.groupForm.resetFields();
         this.groupForm.setFieldsValue({
-          fatherId: id
+          fatherId: id,
+          clients: "ggfwweb"
         });
       });
     },
@@ -798,7 +817,9 @@ export default {
       this.$nextTick(() => {
         this.itemForm.resetFields();
         this.itemForm.setFieldsValue({
-          groupid: id
+          groupid: id,
+          clients: "ggfwweb",
+          topid: "1"
         });
       });
     },
@@ -810,7 +831,50 @@ export default {
     },
     handleFile() {
       return false;
+    },
+    handleNameChange(e) {
+      const groupid = this.itemForm.getFieldValue("groupid");
+      const input = e.target.value;
+      const array = pinyin(input, {
+        style: pinyin.STYLE_NORMAL
+      });
+      let suffix = "";
+      for (let i in array) {
+        suffix = suffix + array[i][0].charAt(0);
+      }
+      suffix = suffix.toUpperCase();
+      this.log(`${groupid}_${suffix}`);
+      this.itemForm.setFieldsValue({
+        id: `${groupid}_${suffix}`
+      });
+    },
+    handleGroupNameChange(e) {
+      const fatherId = this.groupForm.getFieldValue("fatherId");
+      const input = e.target.value;
+      const array = pinyin(input, {
+        style: pinyin.STYLE_NORMAL
+      });
+      let suffix = "";
+      for (let i in array) {
+        suffix = suffix + array[i][0].charAt(0);
+      }
+      suffix = suffix.toUpperCase();
+      this.log(`${fatherId}_${suffix}`);
+      this.groupForm.setFieldsValue({
+        groupid: `${fatherId}_${suffix}`
+      });
     }
   }
 };
 </script>
+
+<style lang="less" scoped>
+.tree-limited {
+  max-height: 80vh;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+</style>
