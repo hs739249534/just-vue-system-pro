@@ -545,7 +545,35 @@ export default {
   components: {},
   data() {
     return {
-      topFuncs: [],
+      // topFuncs: [],
+      topFuncs: [
+        {
+          title: "group####0",
+          key: "group####0",
+          children: [
+            {
+              title: "group####0####0",
+              key: "group####0####0"
+            },
+            {
+              title: "0####0####1",
+              key: "0####0####1"
+            },
+            {
+              title: "0####0####2",
+              key: "0####0####2"
+            }
+          ]
+        },
+        {
+          title: "item####1",
+          key: "item####1"
+        },
+        {
+          title: "create-group####2",
+          key: "create-group####2"
+        }
+      ],
       topfuncsKeys: [],
       groupForm: this.$form.createForm(this, { name: "groupForm" }),
       groupFormVisible: false,
@@ -555,7 +583,7 @@ export default {
     };
   },
   created() {
-    this.getTopFuncs();
+    // this.getTopFuncs();
   },
   methods: {
     moment,
@@ -631,7 +659,9 @@ export default {
       if (keys.length > 0) {
         const key = keys[0];
         const type = key.split("####")[0];
+        this.log("type", type);
         const id = key.split("####")[1];
+        this.log("id", id);
         if (type === "group") {
           this.isUpdate = true;
           this.getGroup(id);
@@ -669,7 +699,7 @@ export default {
               groupicon: ret.groupicon,
               orderid: ret.orderid,
               fatherId: ret.fatherId,
-              closed: ret.closed === "1" ? true : false,
+              closed: ret.closed === "1",
               clients: ret.clients
             });
           });

@@ -16,11 +16,12 @@
               ><a-icon :type="i.icon" /><span>{{ i.name }}</span></span
             >
             <a-menu-item
-              v-for="ii in i.subMenus"
-              :key="ii.name"
-              @click="goto(ii.path)"
+              v-for="j in i.subMenus"
+              :key="j.name"
+              @click="goto(j.path)"
+              v-show=j.disabled
             >
-              <span>{{ ii.name }}</span>
+              <span>{{ j.name }}</span>
             </a-menu-item>
           </a-sub-menu>
           <a-menu-item v-else :key="i.name" @click="goto(i.path)">

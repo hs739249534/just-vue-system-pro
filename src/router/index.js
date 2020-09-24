@@ -36,7 +36,7 @@ const systemRoutes = [
 const routes = [
   {
     path: "/",
-    redirect: "/dashboard",
+    redirect: "/msgMgt/msgList",
     name: "root",
     meta: {
       requiresAuth: true
@@ -45,23 +45,90 @@ const routes = [
       import(/* webpackChunkName: "layout" */ "../views/layout/Layout.vue"),
     children: [
       {
-        path: "/dashboard",
-        name: "dashboard",
-        meta: { name: "菜单管理", icon: "desktop" },
+        path: "/msgMgt",
+        name: "msgMgt",
+        meta: { name: "消息管理", icon: "message", disabled: true },
         component: () =>
           import(
-            /* webpackChunkName: "dashboard" */ "../views/dashboard/Dashboard.vue"
-          )
+            /* webpackChunkName: "layout" */ "../views/msgmgt/MsgLayout.vue"
+          ),
+        children: [
+          {
+            path: "/msgMgt/msgList",
+            name: "msgMgt-msgList",
+            meta: { name: "消息列表", icon: "message", disabled: true },
+            component: () =>
+              import(
+                /* webpackChunkName: "dashboard" */ "../views/msgmgt/MsgList.vue"
+              )
+          },
+          {
+            path: "/msgMgt/msgTemplate",
+            name: "msgMgt-msgTemplate",
+            meta: { name: "消息模板管理", icon: "message", disabled: true },
+            component: () =>
+              import(
+                /* webpackChunkName: "dashboard" */ "../views/msgmgt/MsgTemplate.vue"
+              )
+          },
+          {
+            path: "/msgMgt/newMsg",
+            name: "msgMgt-newMsg",
+            meta: { name: "新建消息", icon: "message", disabled: false },
+            component: () =>
+              import(
+                /* webpackChunkName: "exception" */ "../views/msgmgt/newmsg/NewMsg"
+              )
+          },
+          {
+            path: "/msgMgt/newTemplate",
+            name: "msgMgt-newTemplate",
+            meta: { name: "新建模板", icon: "message", disabled: false },
+            component: () =>
+              import(
+                /* webpackChunkName: "exception" */ "../views/msgmgt/newtemplate/Index"
+              )
+          }
+        ]
+      },
+      {
+        path: "/dashboard",
+        name: "dashboard",
+        meta: { name: "菜单管理", icon: "table", disabled: true },
+        component: () =>
+          import(
+            /* webpackChunkName: "layout" */ "../views/dashboard/DashLayout.vue"
+          ),
+        children: [
+          {
+            path: "/dashboard/appList",
+            name: "dashboard-appList",
+            meta: { name: "APP菜单列表", icon: "table", disabled: true },
+            component: () =>
+              import(
+                /* webpackChunkName: "dashboard" */ "../views/dashboard/Applist.vue"
+              )
+          },
+          {
+            path: "/dashboard/webList",
+            name: "dashboard-webList",
+            meta: { name: "网站菜单列表", icon: "table", disabled: true },
+            component: () =>
+              import(
+                /* webpackChunkName: "dashboard" */ "../views/dashboard/WebList.vue"
+              )
+          },
+          {
+            path: "/dashboard/dashboard",
+            name: "dashboard-dashboard",
+            meta: { name: "dashboard", icon: "table", disabled: true },
+            component: () =>
+              import(
+                /* webpackChunkName: "dashboard" */ "../views/dashboard/Dashboard.vue"
+              )
+          }
+        ]
       }
-      // {
-      //   path: "/global-setting",
-      //   name: "global-setting",
-      //   meta: { name: "全局设置", icon: "setting" },
-      //   component: () =>
-      //     import(
-      //       /* webpackChunkName: "global-setting" */ "../views/dashboard/GlobalSetting.vue"
-      //     )
-      // }
     ]
   }
 ];
@@ -75,16 +142,19 @@ function genMenus(routes) {
         name: route.meta.name,
         path: route.path,
         icon: route.meta.icon,
+        disabled: route.meta.disabled,
         subMenus: genMenus(route.children)
       });
     } else {
       menus.push({
         name: route.meta.name,
         path: route.path,
-        icon: route.meta.icon
+        icon: route.meta.icon,
+        disabled: route.meta.disabled
       });
     }
   }
+  console.log("menus", menus);
   return menus;
 }
 

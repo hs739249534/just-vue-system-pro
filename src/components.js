@@ -25,18 +25,19 @@ import {
   InputNumber,
   Layout,
   List,
-  LocaleProvider,
   message,
   Menu,
   Modal,
   notification,
   Pagination,
+  PageHeader,
   Popconfirm,
   Popover,
   Progress,
   Radio,
   Rate,
   Row,
+  Result,
   Select,
   Slider,
   Spin,
@@ -100,14 +101,15 @@ Vue.use(Input);
 Vue.use(InputNumber);
 Vue.use(Layout);
 Vue.use(List);
-Vue.use(LocaleProvider);
 Vue.use(Menu);
 Vue.use(Modal);
 Vue.use(Pagination);
 Vue.use(Popconfirm);
+Vue.use(PageHeader);
 Vue.use(Popover);
 Vue.use(Progress);
 Vue.use(Radio);
+Vue.use(Result);
 Vue.use(Rate);
 Vue.use(Row);
 Vue.use(Select);
