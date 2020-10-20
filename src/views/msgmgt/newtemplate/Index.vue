@@ -56,15 +56,11 @@ export default {
     return {
       routes: [
         {
-          path: "index",
-          breadcrumbName: "一级菜单"
+          path: "/msgMgt/msgTemplate",
+          breadcrumbName: "消息模版管理"
         },
         {
-          path: "first",
-          breadcrumbName: "二级菜单"
-        },
-        {
-          path: "second",
+          path: "/msgMgt/newTemplate",
           breadcrumbName: "新建消息模板"
         }
       ]

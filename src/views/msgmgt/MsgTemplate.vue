@@ -66,15 +66,55 @@
         @change="handleTableChange"
       >
         <template slot="operation" slot-scope="text, record">
-          <a-popconfirm>
-            <a href="javascript:">修改 </a>
-          </a-popconfirm>
-          <a-popconfirm>
+          <a href="javascript:" @click="changeTemplate(record)">修改 </a>
+          <a-popconfirm title="确定要删除吗?">
             <a href="javascript:"> 删除</a>
           </a-popconfirm>
         </template>
       </a-table>
     </div>
+    <a-modal
+      title="模板修改"
+      :visible="changeTemplateVisable"
+      @ok="handleTemplateOk"
+      @cancel="handleTemplateCancel"
+    >
+      <a-form :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }">
+        <a-form-item label="模板类型">
+          <a-select
+            show-search
+            placeholder="请选择"
+            :default-value="templateData.templateType"
+          >
+            <a-select-option value="腾讯云短信">
+              腾讯云短信
+            </a-select-option>
+            <a-select-option value="微信推送">
+              微信推送
+            </a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="模板ID">
+          <a-input
+            placeholder="请输入模板ID"
+            v-model="templateData.templateID"
+          />
+        </a-form-item>
+        <a-form-item label="模板名称">
+          <a-input
+            placeholder="请输入模板名称"
+            v-model="templateData.templateName"
+          />
+        </a-form-item>
+        <a-form-item label="模板内容">
+          <a-textarea
+            v-model="templateData.content"
+            :auto-size="{ minRows: 3, maxRows: 5 }"
+            placeholder="请输入模板内容"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
@@ -116,16 +156,8 @@ export default {
     return {
       routes: [
         {
-          path: "index",
-          breadcrumbName: "一级菜单"
-        },
-        {
-          path: "first",
-          breadcrumbName: "二级菜单"
-        },
-        {
-          path: "second",
-          breadcrumbName: "三级菜单"
+          path: "/msgMgt/msgTemplate",
+          breadcrumbName: "消息模版管理"
         }
       ],
       data: [
@@ -139,8 +171,10 @@ export default {
             "为您的登录验证码为您的登录验证码为您的登录验证码为您的登录验证码为您的登录验证码为您的登录验证码为您的登录验证码为您的登录验证码为您的登录验证码为您的登录验证码为您的登录验证码为您的登录验证码"
         }
       ],
+      templateData: [],
       pagination: {},
       loading: false,
+      changeTemplateVisable: false,
       columns
     };
   },
@@ -148,40 +182,50 @@ export default {
     handleChangeTask(value) {
       console.log(`selected ${value}`);
     },
-    handleTableChange(pagination, filters, sorter) {
-      console.log(pagination);
-      const pager = { ...this.pagination };
-      pager.current = pagination.current;
-      this.pagination = pager;
-      this.fetch({
-        results: pagination.pageSize,
-        page: pagination.current,
-        sortField: sorter.field,
-        sortOrder: sorter.order,
-        ...filters
-      });
+    handleTemplateOk() {
+      this.changeTemplateVisable = false;
     },
-    fetch(params = {}) {
-      console.log("params:", params);
-      this.loading = true;
-      http
-        .get({
-          url: "https://randomuser.me/api",
-          data: {
-            results: 10,
-            ...params
-          }
-        })
-        .then(data => {
-          const pagination = { ...this.pagination };
-          // Read total count from server
-          // pagination.total = data.totalCount;
-          pagination.total = 200;
-          this.loading = false;
-          this.data = data.results;
-          this.pagination = pagination;
-        });
-    }
+    handleTemplateCancel() {
+      this.changeTemplateVisable = false;
+    },
+    changeTemplate(record) {
+      this.changeTemplateVisable = true;
+      this.templateData = record;
+    },
+    // handleTableChange(pagination, filters, sorter) {
+    //   console.log(pagination);
+    //   const pager = { ...this.pagination };
+    //   pager.current = pagination.current;
+    //   this.pagination = pager;
+    //   this.fetch({
+    //     results: pagination.pageSize,
+    //     page: pagination.current,
+    //     sortField: sorter.field,
+    //     sortOrder: sorter.order,
+    //     ...filters
+    //   });
+    // },
+    // fetch(params = {}) {
+    //   console.log("params:", params);
+    //   this.loading = true;
+    //   http
+    //     .get({
+    //       url: "https://randomuser.me/api",
+    //       data: {
+    //         results: 10,
+    //         ...params
+    //       }
+    //     })
+    //     .then(data => {
+    //       const pagination = { ...this.pagination };
+    //       // Read total count from server
+    //       // pagination.total = data.totalCount;
+    //       pagination.total = 200;
+    //       this.loading = false;
+    //       this.data = data.results;
+    //       this.pagination = pagination;
+    //     });
+    // }
   }
 };
 </script>

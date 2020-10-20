@@ -7,44 +7,77 @@
     />
     <div class="page-content">
       <a-row type="flex">
-        <a-col style="width: 70px; line-height: 32px">
+        <a-col style="width: 45px; line-height: 32px">
           <p>
-            任务描述：
+            标题：
           </p>
         </a-col>
         <a-col style="margin-right: 24px">
-          <a-input style="width: 264px" placeholder="请输入" />
+          <a-input
+            style="width: 184px"
+            v-model="seachMsg.postTitle"
+          />
         </a-col>
+        <!--        <a-col style="width: 70px; line-height: 32px">-->
+        <!--          <p>-->
+        <!--            任务类型：-->
+        <!--          </p>-->
+        <!--        </a-col>-->
+        <!--        <a-col style="margin-right: 24px">-->
+        <!--          <a-select-->
+        <!--            show-search-->
+        <!--            placeholder="请选择"-->
+        <!--            style="width: 264px"-->
+        <!--            @change="handleChangeTask"-->
+        <!--          >-->
+        <!--            <a-select-option value="极光推送" disabled>-->
+        <!--              极光推送-->
+        <!--            </a-select-option>-->
+        <!--            <a-select-option value="腾讯云短信" disabled>-->
+        <!--              腾讯云短信-->
+        <!--            </a-select-option>-->
+        <!--            <a-select-option value="微信推送" disabled>-->
+        <!--              微信推送-->
+        <!--            </a-select-option>-->
+        <!--            <a-select-option value="邮件推送" disabled>-->
+        <!--              邮件推送-->
+        <!--            </a-select-option>-->
+        <!--            <a-select-option value="应用内推送">-->
+        <!--              应用内推送-->
+        <!--            </a-select-option>-->
+        <!--          </a-select>-->
+        <!--        </a-col>-->
         <a-col style="width: 70px; line-height: 32px">
           <p>
-            任务类型：
+            消息类型：
           </p>
         </a-col>
         <a-col style="margin-right: 24px">
           <a-select
             show-search
             placeholder="请选择"
-            style="width: 264px"
-            @change="handleChangeTask"
+            style="width: 184px"
+            :value="seachMsg.postTypeId"
+            @change="handleChangePostTypeId"
           >
-            <a-select-option value="jack">
-              Jack
+            <a-select-option value="tz">
+              通知公告
             </a-select-option>
-            <a-select-option value="lucy">
-              Lucy
+            <a-select-option value="zc">
+              政策法规
             </a-select-option>
-            <a-select-option value="tom">
-              Tom
+            <a-select-option value="jjtz">
+              紧急通知
             </a-select-option>
           </a-select>
         </a-col>
         <a-col style="width: 65px; margin: 0 4px">
-          <a-button type="primary">
+          <a-button type="primary" @click="handleSeach">
             查询
           </a-button>
         </a-col>
         <a-col style="width: 65px; margin: 0 4px">
-          <a-button>
+          <a-button @click="handleReset">
             重置
           </a-button>
         </a-col>
@@ -59,53 +92,137 @@
       </div>
       <a-table
         :columns="columns"
-        :row-key="record => record.key"
+        :row-key="record => record.id"
         :data-source="data"
         :pagination="pagination"
         :loading="loading"
-        @change="handleTableChange"
       >
         <template slot="operation" slot-scope="text, record">
-          <a-popconfirm>
-            <a href="javascript:">详情</a>
-          </a-popconfirm>
+          <a href="javascript:" @click="onDetails(record)">详情</a>
         </template>
       </a-table>
     </div>
+    <a-modal
+      title="消息详情"
+      width="1080px"
+      :visible="detailsVisible"
+      @cancel="handleCancel"
+      style="top: 0;"
+    >
+      <template slot="footer">
+        <a-button type="primary" @click="handleCancel">
+          确定
+        </a-button>
+      </template>
+      <a-form :label-col="{ span: 8 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="标题" v-if="msgDetails.postTitle">
+          {{ msgDetails.postTitle }}
+        </a-form-item>
+        <a-form-item label="副标题" v-if="msgDetails.hsSecTitle">
+          {{ msgDetails.hsSecTitle }}
+        </a-form-item>
+        <a-form-item label="任务类型" v-if="msgDetails.infoType">
+          {{ msgDetails.infoType }}
+        </a-form-item>
+        <a-form-item label="消息类型" v-if="msgDetails.postTypeId">
+          {{ msgDetails.postTypeId }}
+        </a-form-item>
+        <a-form-item label="操作人" v-if="msgDetails.postAuthor">
+          {{ msgDetails.postAuthor }}
+        </a-form-item>
+        <a-form-item label="内容" v-if="msgDetails.postContent">
+          <p
+            style="margin: 0; border: #999999 1px solid"
+            v-html="msgDetails.postContent"
+          ></p>
+        </a-form-item>
+        <a-form-item label="目标人群" v-if="msgDetails.targetPeople">
+          {{ msgDetails.targetPeople }}
+        </a-form-item>
+        <!--        <a-form-item label="用户信息" v-if="msgDetails.userDtos.length > 0">-->
+        <!--          {{ msgDetails.userDtos }}-->
+        <!--        </a-form-item>-->
+        <a-form-item label="创建时间" v-if="msgDetails.createDate">
+          {{ msgDetails.createDate }}
+        </a-form-item>
+        <a-form-item label="发送时间" v-if="msgDetails.postDate">
+          {{ msgDetails.postDate }}
+        </a-form-item>
+        <a-form-item label="终止时间" v-if="msgDetails.stopDate">
+          {{ msgDetails.stopDate }}
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </div>
 </template>
 
 <script>
 import http from "../../utils/http";
-
+import moment from "moment";
+const isNull = val => {
+  if (val) {
+    return val;
+  } else {
+    return "无";
+  }
+};
 const columns = [
   {
-    title: "任务描述",
-    dataIndex: "rwms"
+    title: "标题",
+    dataIndex: "postTitle",
+    width: "18%",
+    customRender: isNull
   },
+  // {
+  //   title: "副标题",
+  //   dataIndex: "hsSecTitle"
+  // },
   {
     title: "目标人群",
-    dataIndex: "mbrq"
+    dataIndex: "targetPeople",
+    width: "10%",
+    customRender: isNull
   },
   {
     title: "任务类型",
-    dataIndex: "rwlx"
+    dataIndex: "infoType",
+    width: "10%",
+    customRender: isNull
+  },
+  {
+    title: "消息类型",
+    dataIndex: "postTypeId",
+    width: "10%",
+    customRender: isNull
   },
   {
     title: "操作人",
-    dataIndex: "czr"
+    dataIndex: "postAuthor",
+    width: "8%",
+    customRender: isNull
   },
   {
     title: "创建时间",
-    dataIndex: "cjsj"
+    dataIndex: "createDate",
+    width: "12%",
+    customRender: isNull
   },
   {
     title: "发送时间",
-    dataIndex: "fssj"
+    dataIndex: "postDate",
+    width: "12%",
+    customRender: isNull
+  },
+  {
+    title: "终止时间",
+    dataIndex: "stopDate",
+    width: "12%",
+    customRender: isNull
   },
   {
     title: "操作",
     dataIndex: "operation",
+    width: "8%",
     scopedSlots: { customRender: "operation" }
   }
 ];
@@ -115,70 +232,101 @@ export default {
     return {
       routes: [
         {
-          path: "index",
-          breadcrumbName: "一级菜单"
-        },
-        {
-          path: "first",
-          breadcrumbName: "二级菜单"
-        },
-        {
-          path: "second",
-          breadcrumbName: "消息通知"
+          path: "/msgMgt/msgList",
+          breadcrumbName: "消息列表"
         }
       ],
-      data: [
-        {
-          key: "1",
-          rwms: "测试短信发送",
-          mbrq: "全部用户",
-          rwlx: "腾讯云短信",
-          czr: "管理员",
-          cjsj: "2016-09-21  08:50:08",
-          fssj: "2016-09-21  08:50:08"
-        }
-      ],
-      pagination: {},
+      seachMsg: {
+        postTitle: "",
+        postTypeId: ""
+      },
+      data: [],
+      msgDetails: [],
+      pagination: {
+        pageSize: 5
+      },
       loading: false,
+      detailsVisible: false,
       columns
     };
   },
+  created() {
+    this.getData();
+  },
   methods: {
-    handleChangeTask(value) {
-      console.log(`selected ${value}`);
+    handleReset() {
+      this.seachMsg.postTitle = "";
+      this.seachMsg.postTypeId = "";
+      this.getData();
     },
-    handleTableChange(pagination, filters, sorter) {
-      console.log(pagination);
-      const pager = { ...this.pagination };
-      pager.current = pagination.current;
-      this.pagination = pager;
-      this.fetch({
-        results: pagination.pageSize,
-        page: pagination.current,
-        sortField: sorter.field,
-        sortOrder: sorter.order,
-        ...filters
-      });
-    },
-    fetch(params = {}) {
-      console.log("params:", params);
+    handleSeach() {
       this.loading = true;
       http
         .get({
-          url: "https://randomuser.me/api",
-          data: {
-            results: 10,
-            ...params
-          }
+          url: "/findMessage",
+          params: this.seachMsg
         })
-        .then(data => {
-          const pagination = { ...this.pagination };
-          // Read total count from server
-          // pagination.total = data.totalCount;
-          pagination.total = 200;
+        .then(res => {
+          console.log(res);
+          this.data = res;
+          this.data.forEach(item => {
+            if (item.postDate && item.postDate.toString().length === 13) {
+              item.postDate = moment(item.postDate).format(
+                "YYYY-MM-DD HH:mm:ss"
+              );
+            }
+            if (item.stopDate && item.stopDate.toString().length === 13) {
+              item.stopDate = moment(item.stopDate).format(
+                "YYYY-MM-DD HH:mm:ss"
+              );
+            }
+          });
           this.loading = false;
-          this.data = data.results;
-          this.pagination = pagination;
+        })
+        .catch(err => {
+          console.log("err", err);
+        });
+    },
+    onDetails(record) {
+      this.detailsVisible = true;
+      this.msgDetails = record;
+      console.log("record", record);
+    },
+    handleCancel() {
+      console.log("Clicked cancel button");
+      this.detailsVisible = false;
+    },
+    handleChangeTask(value) {
+      console.log(`selected ${value}`);
+    },
+    handleChangePostTypeId(value) {
+      this.seachMsg.postTypeId = value;
+    },
+    getData() {
+      this.loading = true;
+      http
+        .get({
+          url: "/findAllMessage"
+        })
+        .then(res => {
+          this.data = res;
+          this.data.forEach(item => {
+            if (item.postDate && item.postDate.toString().length === 13) {
+              item.postDate = moment(item.postDate).format(
+                "YYYY-MM-DD HH:mm:ss"
+              );
+            }
+            if (item.stopDate && item.stopDate.toString().length === 13) {
+              item.stopDate = moment(item.stopDate).format(
+                "YYYY-MM-DD HH:mm:ss"
+              );
+            }
+          });
+          console.log(this.data);
+          this.loading = false;
+        })
+        .catch(err => {
+          console.log("err", err);
         });
     }
   }
@@ -188,5 +336,8 @@ export default {
 <style scoped>
 .page-content {
   padding: 24px 32px;
+}
+.ant-row {
+  margin-bottom: 0;
 }
 </style>

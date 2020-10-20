@@ -19,7 +19,7 @@
               v-for="j in i.subMenus"
               :key="j.name"
               @click="goto(j.path)"
-              v-show=j.disabled
+              v-show="j.disabled"
             >
               <span>{{ j.name }}</span>
             </a-menu-item>
@@ -38,20 +38,19 @@
           :type="collapsed ? 'menu-unfold' : 'menu-fold'"
           @click="() => (collapsed = !collapsed)"
         />
-        <a-popover trigger="click" v-model="visible">
+        <a-popover trigger="click">
           <a-avatar
             v-if="user"
             class="avatar"
             shape="square"
             size="large"
-            @click="visible = true"
             :style="{ backgroundColor: color, verticalAlign: 'middle' }"
             >{{ user }}
           </a-avatar>
           <div slot="content">
-            <div @click="changePassword">修改密码</div>
+            <div @click="changePassword" style="cursor: pointer">修改密码</div>
             <a-divider style="margin: 10px 0;" />
-            <div @click="exit">注销登录</div>
+            <div @click="exit" style="cursor: pointer">注销登录</div>
           </div>
         </a-popover>
       </a-layout-header>
