@@ -90,19 +90,11 @@
             </a-button>
           </a-form-item>
 
-          <!--<div class="user-login-other">-->
-          <!--<span>其他登录方式</span>-->
-          <!--<a>-->
-          <!--  <a-icon class="item-icon" type="alipay-circle"></a-icon>-->
-          <!--</a>-->
-          <!--<a>-->
-          <!--  <a-icon class="item-icon" type="taobao-circle"></a-icon>-->
-          <!--</a>-->
-          <!--<a>-->
-          <!--  <a-icon class="item-icon" type="weibo-circle"></a-icon>-->
-          <!--</a>-->
-          <!--<router-link class="register" :to="{ name: 'change-password' }">密码修改</router-link>-->
-          <!--</div>-->
+          <div class="user-login-other">
+            <router-link class="register" :to="{ name: 'register' }"
+              >注册账户</router-link
+            >
+          </div>
         </a-form>
       </div>
 
@@ -116,6 +108,7 @@
 <script>
 // import http from "../../utils/http";
 import * as types from "../../store/mutation-types";
+import http from "../../utils/http";
 
 export default {
   data() {
@@ -147,8 +140,8 @@ export default {
     } = this;
     if (process.env.NODE_ENV !== "production") {
       setFieldsValue({
-        username: "admin",
-        password: "q1w2e3r4"
+        username: "Fei",
+        password: "123"
       });
     }
   },
@@ -171,37 +164,37 @@ export default {
               login.buttonDisable = false;
             }, 1000);
           } else {
-            // http
-            //   .post({
-            //     url: "api/token/",
-            //     data: {
-            //       username: values.username,
-            //       password: values.password
-            //     }
-            //   })
-            //   .then(res => {
-            //     this.log(res);
-            //     this.$store.commit(types.SET_ACCESS_TOKEN, {
-            //       access_token: res.access,
-            //       expires_in: 1 * 24 * 60 * 1000
-            //     });
-            //     this.$ls.set("user", {
-            //       name: values.username
-            //     });
-            //     this.loginSuccess();
-            //   })
-            //   .catch(err => {
-            //     this.log(err);
-            //     this.loginFailed();
-            //   });
-            this.$store.commit(types.SET_ACCESS_TOKEN, {
-              access_token: values.username,
-              expires_in: 1 * 24 * 60 * 1000
-            });
-            this.$ls.set("user", {
-              name: values.username
-            });
-            this.loginSuccess();
+            http
+              .post({
+                url: "/doLogin",
+                data: {
+                  username: values.username,
+                  password: values.password
+                }
+              })
+              .then(res => {
+                this.log(res);
+                // this.$store.commit(types.SET_ACCESS_TOKEN, {
+                //   access_token: res.access,
+                //   expires_in: 1 * 24 * 60 * 1000
+                // });
+                this.$ls.set("user", {
+                  username: values.username
+                });
+                this.loginSuccess();
+              })
+              .catch(err => {
+                this.log(err);
+                this.loginFailed();
+              });
+            // this.$store.commit(types.SET_ACCESS_TOKEN, {
+            //   access_token: values.username,
+            //   expires_in: 1 * 24 * 60 * 1000
+            // });
+            // this.$ls.set("user", {
+            //   name: values.username
+            // });
+            // this.loginSuccess();
           }
         }
       );

@@ -13,10 +13,7 @@
           </p>
         </a-col>
         <a-col style="margin-right: 24px">
-          <a-input
-            style="width: 184px"
-            v-model="seachMsg.postTitle"
-          />
+          <a-input style="width: 184px" v-model="seachMsg.postTitle" />
         </a-col>
         <!--        <a-col style="width: 70px; line-height: 32px">-->
         <!--          <p>-->

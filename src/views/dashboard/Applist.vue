@@ -571,7 +571,7 @@ export default {
     },
     onExpand() {
       // console.log("Trigger Expand");
-    },
+    }
 
     // getMenu(fatherId) {
     //   http

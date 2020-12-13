@@ -16,6 +16,20 @@ const systemRoutes = [
       import(/* webpackChunkName: "login" */ "../views/login/Login.vue")
   },
   {
+    path: "/register",
+    name: "register",
+    meta: {},
+    component: () =>
+      import(/* webpackChunkName: "login" */ "../views/login/Register.vue")
+  },
+  {
+    path: "/register-result",
+    name: "registerResult",
+    meta: {},
+    component: () =>
+      import(/* webpackChunkName: "user" */ "../views/login/RegisterResult")
+  },
+  {
     path: "/change-password",
     name: "change-password",
     meta: {},
@@ -36,7 +50,7 @@ const systemRoutes = [
 const routes = [
   {
     path: "/",
-    redirect: "/msgMgt/msgList",
+    redirect: "/mainList/workPlace",
     name: "root",
     meta: {
       requiresAuth: true
@@ -44,6 +58,35 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "layout" */ "../views/layout/Layout.vue"),
     children: [
+      {
+        path: "/mainList",
+        name: "mainList",
+        meta: { name: "个人主页", icon: "message", disabled: true },
+        component: () =>
+          import(
+            /* webpackChunkName: "layout" */ "../views/mainList/MainLayout.vue"
+          ),
+        children: [
+          {
+            path: "/mainList/workPlace",
+            name: "mainList-workPlace",
+            meta: { name: "工作平台", icon: "message", disabled: true },
+            component: () =>
+              import(
+                /* webpackChunkName: "dashboard" */ "../views/mainList/WorkPlace"
+              )
+          },
+          {
+            path: "/mainList/userInfo",
+            name: "mainList-userInfo",
+            meta: { name: "个人信息", icon: "message", disabled: true },
+            component: () =>
+              import(
+                /* webpackChunkName: "dashboard" */ "../views/mainList/UserInfo"
+              )
+          }
+        ]
+      },
       {
         path: "/msgMgt",
         name: "msgMgt",
@@ -166,21 +209,21 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    const requiresAuth = Vue.ls.get(types.ACCESS_TOKEN);
-    if (requiresAuth) {
-      next();
-    } else {
-      next({
-        path: "/login",
-        query: {
-          redirect: to.fullPath
-        }
-      });
-    }
-  } else {
-    next();
-  }
+  // if (to.matched.some(record => record.meta.requiresAuth)) {
+  //   const requiresAuth = Vue.ls.get(types.ACCESS_TOKEN);
+  //   if (requiresAuth) {
+  //     next();
+  //   } else {
+  //     next({
+  //       path: "/login",
+  //       query: {
+  //         redirect: to.fullPath
+  //       }
+  //     });
+  //   }
+  // } else {
+  next();
+  // }
 });
 
 router.afterEach(() => {
@@ -188,5 +231,5 @@ router.afterEach(() => {
 });
 
 export const menus = genMenus(routes);
-export const title = "智能问答机器人控制台";
+export const title = "人力资源管理系统";
 export default router;

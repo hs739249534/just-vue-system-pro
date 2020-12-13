@@ -1,9 +1,7 @@
 <template>
   <div>
     <a-result status="success" title="操作成功"></a-result>
-    <div
-      style="width: 720px; background: #f7f7f7; margin: 0 auto"
-    >
+    <div style="width: 720px; background: #f7f7f7; margin: 0 auto">
       <a-form :label-col="{ span: 8 }" :wrapper-col="{ span: 12 }">
         <a-form-item label="标题" v-if="adminInfoDto.postTitle">
           {{ adminInfoDto.postTitle }}
@@ -18,7 +16,10 @@
           {{ adminInfoDto.postTypeId }}
         </a-form-item>
         <a-form-item label="内容" v-if="adminInfoDto.postContent">
-          <p style="margin: 0; border: #999999 1px solid" v-html="adminInfoDto.postContent"></p>
+          <p
+            style="margin: 0; border: #999999 1px solid"
+            v-html="adminInfoDto.postContent"
+          ></p>
         </a-form-item>
         <a-form-item label="目标人群" v-if="adminInfoDto.targetPeople">
           {{ adminInfoDto.targetPeople }}

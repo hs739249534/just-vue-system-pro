@@ -191,7 +191,7 @@ export default {
     changeTemplate(record) {
       this.changeTemplateVisable = true;
       this.templateData = record;
-    },
+    }
     // handleTableChange(pagination, filters, sorter) {
     //   console.log(pagination);
     //   const pager = { ...this.pagination };

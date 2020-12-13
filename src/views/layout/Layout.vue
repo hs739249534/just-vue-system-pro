@@ -93,7 +93,7 @@ export default {
       const user = this.$ls.get("user");
       this.log("current user", user);
       if (user) {
-        return user.name;
+        return user.username;
       } else {
         return "";
       }

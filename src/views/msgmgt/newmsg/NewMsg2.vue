@@ -1,9 +1,6 @@
 <template>
   <div>
-    <a-form
-      :label-col="{ span: 8 }"
-      :wrapper-col="{ span: 8 }"
-    >
+    <a-form :label-col="{ span: 8 }" :wrapper-col="{ span: 8 }">
       <a-form-item label="任务类型">
         <a-select show-search placeholder="请选择" @change="handleChangeTask">
           <a-select-option value="极光推送" disabled>
@@ -24,10 +21,7 @@
         </a-select>
       </a-form-item>
       <!--      <div style="height: 240px;">-->
-      <a-form-item
-        label="邮箱地址"
-        v-if="adminInfoDto.infoType === '邮件推送'"
-      >
+      <a-form-item label="邮箱地址" v-if="adminInfoDto.infoType === '邮件推送'">
         <a-input placeholder="请输入邮箱地址" />
       </a-form-item>
       <a-form-item
