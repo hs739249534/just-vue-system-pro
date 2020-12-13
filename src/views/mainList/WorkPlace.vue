@@ -9,7 +9,7 @@
           <a-avatar size="large" :src="currentUser.avatar" />
         </div>
         <div class="content">
-          <div class="content-title">{{ timeFix }}，{{ user.username }}</div>
+          <div class="content-title">{{ timeFix }}，{{ user.name }}</div>
           <div>软件工程师 | 河北东软 - XXXX部 - XX平台</div>
         </div>
       </div>

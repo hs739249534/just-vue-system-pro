@@ -29,6 +29,22 @@
               ]"
             ></a-input>
           </a-form-item>
+          <a-form-item>
+            <a-input
+              size="large"
+              type="text"
+              placeholder="真实姓名"
+              v-decorator="[
+                'name',
+                {
+                  rules: [
+                    { required: true, message: '请输入真实姓名' }
+                  ],
+                  validateTrigger: ['change', 'blur']
+                }
+              ]"
+            ></a-input>
+          </a-form-item>
 
           <a-popover
             placement="rightTop"
@@ -313,7 +329,8 @@ export default {
               data: {
                 email: values.email,
                 password: values.password,
-                phoneNum: values.mobile
+                phoneNum: values.mobile,
+                name: values.name
               }
             })
             .then(res => {

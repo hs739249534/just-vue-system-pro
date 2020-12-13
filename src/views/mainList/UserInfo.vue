@@ -46,8 +46,21 @@ export default {
   },
   mounted() {
     this.getUserInfo();
+    this.getAllInfo();
   },
   methods: {
+    getAllInfo() {
+      http
+        .get({
+          url: "/api/user/getAllInfo"
+        })
+        .then(res => {
+          console.log("员工信息", res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     getUserInfo() {
       http
         .get({

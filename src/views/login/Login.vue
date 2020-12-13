@@ -146,6 +146,23 @@ export default {
     }
   },
   methods: {
+    getUserInfo() {
+      http
+        .get({
+          url: "/api/user/getUserInfo",
+          params: {
+            username: this.$ls.get("user").username
+          }
+        })
+        .then(res => {
+          console.log("userInfo", res);
+          this.$ls.set("user", res);
+          this.loginSuccess();
+        })
+        .catch(err => {
+          console.log("err", err);
+        });
+    },
     handleSubmit(e) {
       e.preventDefault();
       const {
@@ -181,7 +198,8 @@ export default {
                 this.$ls.set("user", {
                   username: values.username
                 });
-                this.loginSuccess();
+                this.getUserInfo();
+                // this.loginSuccess();
               })
               .catch(err => {
                 this.log(err);

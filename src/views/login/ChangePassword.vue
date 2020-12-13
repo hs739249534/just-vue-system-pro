@@ -84,7 +84,10 @@
                 're_new_password',
                 {
                   initialValue: '',
-                  rules: [{ required: true, message: '请确认密码' }],
+                  rules: [
+                    { required: true, message: '请确认密码' },
+                    { validator: this.handlePasswordCheck }
+                  ],
                   validateTrigger: 'blur'
                 }
               ]"
@@ -146,6 +149,17 @@ export default {
     }
   },
   methods: {
+    handlePasswordCheck(rule, value, callback) {
+      const password = this.form.getFieldValue("new_password");
+      console.log("value", value);
+      if (value === undefined) {
+        callback(new Error("请输入密码"));
+      }
+      if (value && password && value.trim() !== password.trim()) {
+        callback(new Error("两次密码不一致"));
+      }
+      callback();
+    },
     handleSubmit(e) {
       e.preventDefault();
       const {
@@ -166,11 +180,10 @@ export default {
           } else {
             http
               .post({
-                url: "api/user/change_password/",
-                data: {
-                  old_password: values.old_password,
-                  new_password: values.new_password,
-                  re_new_password: values.re_new_password
+                url: "api/user/changePassword/",
+                params: {
+                  id: this.$ls.get("user").id,
+                  password: values.new_password
                 }
               })
               .then(res => {

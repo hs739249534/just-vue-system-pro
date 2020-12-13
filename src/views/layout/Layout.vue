@@ -11,7 +11,7 @@
         :selectedKeys="[active]"
       >
         <template v-for="i in menus">
-          <a-sub-menu v-if="i.subMenus && i.subMenus.length > 0" :key="i.name">
+          <a-sub-menu v-if="i.subMenus && i.subMenus.length > 0 && (i.role === '' ||i.role === role)" :key="i.name">
             <span slot="title"
               ><a-icon :type="i.icon" /><span>{{ i.name }}</span></span
             >
@@ -75,7 +75,8 @@ export default {
       menus: menus[0].subMenus,
       collapsed: false,
       color,
-      visible: false
+      visible: false,
+      role: this.$ls.get("user").authorities[0].authority
     };
   },
   computed: {
@@ -93,7 +94,7 @@ export default {
       const user = this.$ls.get("user");
       this.log("current user", user);
       if (user) {
-        return user.username;
+        return user.name;
       } else {
         return "";
       }

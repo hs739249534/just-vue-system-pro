@@ -88,12 +88,32 @@ const routes = [
         ]
       },
       {
+        path: "/personMgt",
+        name: "personMgt",
+        meta: { name: "人事管理", icon: "message", disabled: true, role: "ROLE_admin" },
+        component: () =>
+          import(
+            /* webpackChunkName: "layout" */ "../views/personMgt/PersonMgtLayout"
+          ),
+        children: [
+          {
+            path: "/personMgt/personList",
+            name: "personMgt-personList",
+            meta: { name: "人员列表", icon: "message", disabled: true, role: "ROLE_admin" },
+            component: () =>
+              import(
+                /* webpackChunkName: "dashboard" */ "../views/personMgt/PersonList"
+              )
+          }
+        ]
+      }
+      /*      {
         path: "/msgMgt",
         name: "msgMgt",
         meta: { name: "消息管理", icon: "message", disabled: true },
         component: () =>
           import(
-            /* webpackChunkName: "layout" */ "../views/msgmgt/MsgLayout.vue"
+            /!* webpackChunkName: "layout" *!/ "../views/msgmgt/MsgLayout.vue"
           ),
         children: [
           {
@@ -102,7 +122,7 @@ const routes = [
             meta: { name: "消息列表", icon: "message", disabled: true },
             component: () =>
               import(
-                /* webpackChunkName: "dashboard" */ "../views/msgmgt/MsgList.vue"
+                /!* webpackChunkName: "dashboard" *!/ "../views/msgmgt/MsgList.vue"
               )
           },
           {
@@ -111,7 +131,7 @@ const routes = [
             meta: { name: "消息模板管理", icon: "message", disabled: true },
             component: () =>
               import(
-                /* webpackChunkName: "dashboard" */ "../views/msgmgt/MsgTemplate.vue"
+                /!* webpackChunkName: "dashboard" *!/ "../views/msgmgt/MsgTemplate.vue"
               )
           },
           {
@@ -120,7 +140,7 @@ const routes = [
             meta: { name: "新建消息", icon: "message", disabled: false },
             component: () =>
               import(
-                /* webpackChunkName: "exception" */ "../views/msgmgt/newmsg/NewMsg"
+                /!* webpackChunkName: "exception" *!/ "../views/msgmgt/newmsg/NewMsg"
               )
           },
           {
@@ -129,7 +149,7 @@ const routes = [
             meta: { name: "新建模板", icon: "message", disabled: false },
             component: () =>
               import(
-                /* webpackChunkName: "exception" */ "../views/msgmgt/newtemplate/Index"
+                /!* webpackChunkName: "exception" *!/ "../views/msgmgt/newtemplate/Index"
               )
           }
         ]
@@ -140,7 +160,7 @@ const routes = [
         meta: { name: "菜单管理", icon: "table", disabled: true },
         component: () =>
           import(
-            /* webpackChunkName: "layout" */ "../views/dashboard/DashLayout.vue"
+            /!* webpackChunkName: "layout" *!/ "../views/dashboard/DashLayout.vue"
           ),
         children: [
           {
@@ -149,7 +169,7 @@ const routes = [
             meta: { name: "APP菜单列表", icon: "table", disabled: true },
             component: () =>
               import(
-                /* webpackChunkName: "dashboard" */ "../views/dashboard/Applist.vue"
+                /!* webpackChunkName: "dashboard" *!/ "../views/dashboard/Applist.vue"
               )
           },
           {
@@ -158,7 +178,7 @@ const routes = [
             meta: { name: "网站菜单列表", icon: "table", disabled: true },
             component: () =>
               import(
-                /* webpackChunkName: "dashboard" */ "../views/dashboard/WebList.vue"
+                /!* webpackChunkName: "dashboard" *!/ "../views/dashboard/WebList.vue"
               )
           },
           {
@@ -167,11 +187,11 @@ const routes = [
             meta: { name: "dashboard", icon: "table", disabled: true },
             component: () =>
               import(
-                /* webpackChunkName: "dashboard" */ "../views/dashboard/Dashboard.vue"
+                /!* webpackChunkName: "dashboard" *!/ "../views/dashboard/Dashboard.vue"
               )
           }
         ]
-      }
+      }*/
     ]
   }
 ];
@@ -186,6 +206,7 @@ function genMenus(routes) {
         path: route.path,
         icon: route.meta.icon,
         disabled: route.meta.disabled,
+        role: route.meta.role ? route.meta.role : "",
         subMenus: genMenus(route.children)
       });
     } else {
