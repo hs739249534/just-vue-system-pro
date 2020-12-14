@@ -61,7 +61,7 @@ const routes = [
       {
         path: "/mainList",
         name: "mainList",
-        meta: { name: "个人主页", icon: "message", disabled: true },
+        meta: { name: "个人主页", icon: "message", disabled: true, role: "ROLE_admin, ROLE_user" },
         component: () =>
           import(
             /* webpackChunkName: "layout" */ "../views/mainList/MainLayout.vue"
@@ -70,7 +70,7 @@ const routes = [
           {
             path: "/mainList/workPlace",
             name: "mainList-workPlace",
-            meta: { name: "工作平台", icon: "message", disabled: true },
+            meta: { name: "工作平台", icon: "message", disabled: true, role: "ROLE_admin, ROLE_user" },
             component: () =>
               import(
                 /* webpackChunkName: "dashboard" */ "../views/mainList/WorkPlace"
@@ -79,7 +79,7 @@ const routes = [
           {
             path: "/mainList/userInfo",
             name: "mainList-userInfo",
-            meta: { name: "个人信息", icon: "message", disabled: true },
+            meta: { name: "个人信息", icon: "message", disabled: true, role: "ROLE_admin, ROLE_user" },
             component: () =>
               import(
                 /* webpackChunkName: "dashboard" */ "../views/mainList/UserInfo"
@@ -201,21 +201,24 @@ function genMenus(routes) {
   for (let i in routes) {
     const route = routes[i];
     if (route.children && route.children.length > 0) {
-      menus.push({
-        name: route.meta.name,
-        path: route.path,
-        icon: route.meta.icon,
-        disabled: route.meta.disabled,
-        role: route.meta.role ? route.meta.role : "",
-        subMenus: genMenus(route.children)
-      });
+      if (Vue.ls.get("user").authorities[0].authority.indexOf(route.meta.role)>-1) {
+        menus.push({
+          name: route.meta.name,
+          path: route.path,
+          icon: route.meta.icon,
+          disabled: route.meta.disabled,
+          subMenus: genMenus(route.children)
+        });
+      }
     } else {
-      menus.push({
-        name: route.meta.name,
-        path: route.path,
-        icon: route.meta.icon,
-        disabled: route.meta.disabled
-      });
+      if (Vue.ls.get("user").authorities[0].authority.indexOf(route.meta.role)>-1) {
+        menus.push({
+          name: route.meta.name,
+          path: route.path,
+          icon: route.meta.icon,
+          disabled: route.meta.disabled
+        });
+      }
     }
   }
   console.log("menus", menus);

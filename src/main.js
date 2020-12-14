@@ -10,7 +10,7 @@ import "./components";
 
 Vue.use(VueClipboard);
 Vue.use(VueStorage, {
-  namespace: "nsbot__console__",
+  namespace: "just__",
   name: "ls",
   storage: "session"
 });
