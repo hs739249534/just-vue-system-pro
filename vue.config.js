@@ -1,6 +1,6 @@
 // server url
 // const target = "http://10.19.92.213:12323";
-const target = "http://localhost:8080/";
+const target = "http://localhost:8088/";
 // const target = "http://localhost:1212";
 
 module.exports = {

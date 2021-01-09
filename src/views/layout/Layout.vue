@@ -11,7 +11,7 @@
         :selectedKeys="[active]"
       >
         <template v-for="i in menus">
-          <a-sub-menu v-if="i.subMenus && i.subMenus.length > 0 && (i.role === '' ||i.role === role)" :key="i.name">
+          <a-sub-menu v-if="i.subMenus && i.subMenus.length > 0" :key="i.name">
             <span slot="title"
               ><a-icon :type="i.icon" /><span>{{ i.name }}</span></span
             >
@@ -102,8 +102,40 @@ export default {
   },
   mounted() {
     this.log("current menus", this.menus);
+    this.menus = this.genMenus(this.menus);
+    this.log("current menus", this.menus);
   },
   methods: {
+    genMenus(routes) {
+      let menus = [];
+      for (let i in routes) {
+        const route = routes[i];
+        console.log(this.role,route.role ,route.role.indexOf(this.role))
+        if (route.subMenus && route.subMenus.length > 0) {
+          if (route.role.indexOf(this.role) > -1) {
+            menus.push({
+              name: route.name,
+              path: route.path,
+              icon: route.icon,
+              disabled: route.disabled,
+              role: route.role,
+              subMenus: this.genMenus(route.subMenus)
+            });
+          }
+        } else {
+          if (route.role.indexOf(this.role) > -1) {
+            menus.push({
+              name: route.name,
+              path: route.path,
+              icon: route.icon,
+              role: route.role,
+              disabled: route.disabled
+            });
+          }
+        }
+      }
+      return menus;
+    },
     goto(path) {
       this.log("current page", path);
       if (this.$route.path === path) {

@@ -9,6 +9,23 @@
         <a-button @click="registerVisible = true" type="primary">
           新增
         </a-button>
+        <!--        <a-button @click="registerVisible = true">-->
+        <!--          批量导入-->
+        <!--        </a-button>-->
+        <input
+          type="file"
+          id="file"
+          style="display: none"
+          @change="handleFileChange"
+          ref="inputer"
+        />
+        <a-dropdown-button @click="handleButtonClick">
+          批量导入
+          <a-menu slot="overlay" @click="handleMenuClick">
+            <a-menu-item key="1">下载模板</a-menu-item>
+          </a-menu>
+          <a-icon slot="icon" type="down" />
+        </a-dropdown-button>
       </div>
       <a-table
         :columns="columns"
@@ -218,6 +235,46 @@ export default {
     this.getAllInfo();
   },
   methods: {
+    handleButtonClick(e) {
+      console.log("click left button", e);
+      document.getElementById("file").click();
+      // var file = document.querySelector("#file").files[0];
+      // //创建formdata对象
+      // var formdata = new FormData();
+      // formdata.append("file",file);
+      // console.log("formdata", formdata)
+    },
+    handleFileChange() {
+      let inputDOM = this.$refs.inputer;
+      let file = inputDOM.files[0]; //通过DOM取文件数据
+      console.log("file", file);
+      // eslint-disable-next-line no-unused-vars
+      let size = Math.floor(file.size / 1024); //计算文件的大小
+      console.log("size", size);
+      let formData = new FormData(); //new一个formData事件
+      formData.append("file", file); //将file属性添加到formData里
+      console.log("formData", formData);
+      http
+        .upload({
+          method: "POST",
+          url: "/api/user/addManyUserInfo",
+          data: formData
+        })
+        .then(res => {
+          console.log("res", res);
+          this.getAllInfo();
+          this.$success({
+            title: "成功！",
+            content: "导入成功"
+          });
+        })
+        .catch(err => {
+          console.log("err", err);
+        });
+    },
+    handleMenuClick(e) {
+      console.log("click", e);
+    },
     getRegisterVisible(data) {
       this.registerVisible = data;
       this.getAllInfo();
@@ -264,6 +321,7 @@ export default {
         })
         .then(res => {
           console.log(res);
+          this.getAllInfo();
           this.$success({
             title: "成功！",
             content: "删除成功"

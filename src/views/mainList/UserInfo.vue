@@ -71,6 +71,7 @@ export default {
         })
         .then(res => {
           console.log("userInfo", res);
+          this.$ls.set("user", res);
           this.user = res;
         })
         .catch(err => {

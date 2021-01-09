@@ -31,27 +31,27 @@
           ]"
         ></a-input>
       </a-form-item>
-      <a-popover
-        placement="rightTop"
-        :trigger="['focus']"
-        :getPopupContainer="trigger => trigger.parentElement"
-        v-model="state.passwordLevelChecked"
-      >
-        <template slot="content">
-          <div :style="{ width: '240px' }">
-            <div :class="['user-register', passwordLevelClass]">
-              强度：<span>{{ passwordLevelName }}</span>
-            </div>
-            <a-progress
-              :percent="state.percent"
-              :showInfo="false"
-              :strokeColor="passwordLevelColor"
-            />
-            <div style="margin-top: 10px;">
-              <span>请至少输入 6 个字符。请不要使用容易被猜到的密码。</span>
-            </div>
-          </div>
-        </template>
+<!--      <a-popover-->
+<!--        placement="rightTop"-->
+<!--        :trigger="['focus']"-->
+<!--        :getPopupContainer="trigger => trigger.parentElement"-->
+<!--        v-model="state.passwordLevelChecked"-->
+<!--      >-->
+<!--        <template slot="content">-->
+<!--          <div :style="{ width: '240px' }">-->
+<!--            <div :class="['user-register', passwordLevelClass]">-->
+<!--              强度：<span>{{ passwordLevelName }}</span>-->
+<!--            </div>-->
+<!--            <a-progress-->
+<!--              :percent="state.percent"-->
+<!--              :showInfo="false"-->
+<!--              :strokeColor="passwordLevelColor"-->
+<!--            />-->
+<!--            <div style="margin-top: 10px;">-->
+<!--              <span>请至少输入 6 个字符。请不要使用容易被猜到的密码。</span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </template>-->
         <a-form-item>
           <a-input-password
             size="large"
@@ -61,15 +61,14 @@
               'password',
               {
                 rules: [
-                  { required: true, message: '至少6位密码，区分大小写' },
-                  { validator: this.handlePasswordLevel }
+                  { required: true, message: '至少6位密码，区分大小写' }
                 ],
                 validateTrigger: ['change', 'blur']
               }
             ]"
           ></a-input-password>
         </a-form-item>
-      </a-popover>
+<!--      </a-popover>-->
 
       <a-form-item>
         <a-input-password
